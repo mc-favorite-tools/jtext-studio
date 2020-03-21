@@ -1,0 +1,57 @@
+.json-view {
+    &-color {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+    }
+    .mc-tile {
+        cursor: default;
+        user-select: none;
+        padding: 1px;
+        &.drag-enter {
+           background-color: rgb(235, 166, 64);
+        }
+        &.active {
+            background-color: rgba(92, 171, 224, 1);
+            transform: .2s;
+            &.animate {
+                animation: cursor 1s linear infinite;
+            }
+        }
+        &:hover {
+            background-color: rgb(94, 92, 224);
+        }
+        &-end {
+            position: relative;
+        }
+        &-enter {
+            position: absolute;
+            font-size: 12px;
+            color: #cccccc;
+        }
+        // &.nbt {
+        //     border-radius: 3px;
+        //     color: #fff !important;
+        //     background-color: #11b367;
+        // }
+        // &.selector {
+        //     border-radius: 3px;
+        //     color: #fff !important;
+        //     background-color: #9311b3;
+        // }
+        // &.score {
+        //     border-radius: 3px;
+        //     color: #fff !important;
+        //     background-color: #115db3;
+        // }
+    }
+}
+
+@keyframes cursor {
+    from {
+        background-color: rgba(94, 92, 224, 0.63);
+    }
+    to {
+        background-color: rgba(94, 92, 224, 0);
+    }
+}

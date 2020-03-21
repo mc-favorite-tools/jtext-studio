@@ -1,0 +1,32 @@
+.select-color {
+    position: relative;
+    display: inline-block;
+    vertical-align: bottom;
+    &-cover {
+        position: fixed;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+    }
+    &-watch {
+        width: 100px;
+        height: 32px;
+        border: 1px solid #d9d9d9;
+        border-radius: 5px;
+        padding: 5px;
+    }
+    &-tile {
+        display: inline-block;
+        height: 100%;
+        width: 100%;
+        background-color: #eee;
+        font-size: 16px;
+    }
+    &-pane {
+        z-index: 1;
+        position: absolute;
+        top: 37px;
+        left: 0;
+    }
+}

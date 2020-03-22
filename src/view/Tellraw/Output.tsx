@@ -14,8 +14,8 @@ interface IProps {
     visible: boolean,
     onClose: () => void,
     data: TellrawData[],
-    editData: (index: number) => void,
-    removeOne: (index: number) => void,
+    editData: (id: string) => void,
+    removeOne: (index: number, id: string) => void,
     pack: (keys: string[], items: TellrawData[]) => void,
     remove: (keys: string[]) => void,
     move: (items: TellrawData[]) => void,
@@ -100,13 +100,13 @@ export default function(props: IProps) {
             dataIndex: 'action',
             fixed: 'right',
             title: '操作',
-            render: (_: string, __: TellrawData, index: number) => {
+            render: (_: string, record: TellrawData, index: number) => {
                 return (
                     <div>
-                        <a style={{ marginRight: 8 }} onClick={props.editData.bind(null, index)}>编辑</a>
+                        <a style={{ marginRight: 8 }} onClick={props.editData.bind(null, record.id)}>编辑</a>
                         <a style={{ marginRight: 8 }} onClick={props.generate.bind(null, index, false)}>生成</a>
                         <a style={{ marginRight: 8 }} title='启用hover高级模式，并填充当前项' onClick={props.fillHover.bind(null, index)}>hover</a>
-                        <a style={{ color: 'red' }} onClick={props.removeOne.bind(null, index)}>删除</a>
+                        <a style={{ color: 'red' }} onClick={props.removeOne.bind(null, index, record.id)}>删除</a>
                     </div>
                 )
             }

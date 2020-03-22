@@ -26,7 +26,7 @@ export default function() {
     const [importVisible, setImportVisible] = useState(false);
     const [parseVisible, setParseVisible] = useState(false);
     const [data, setData] = useState<TellrawData[]>([]);
-    const [actIndex, setActIndex] = useState(-1);
+    const [actId, setActId] = useState('');
     const textRef = useRef<TextArea>()
     const nbtRef = useRef<Input>()
     const selectorRef = useRef<Input>()
@@ -141,10 +141,11 @@ export default function() {
             mark: jsonGroup.getMark() ? jsonGroup.getMark() : jsonGroup.getTiles()[0].getText(),
             id: Math.random().toString(36).slice(3),
         }
-        if (actIndex > -1) {
-            data.splice(actIndex, 1, newData)
+        const index = data.findIndex(item => item.id === actId)
+        if (actId && index > -1) {
+            data.splice(index, 1, newData)
             setData(() => [...data])
-            setActIndex(() => -1)
+            setActId(() => '')
         } else {
             setData(data => [...data, newData])
         }
@@ -320,6 +321,7 @@ export default function() {
     }
     const onClose = () => {
         setVisible(() => false)
+        setFocus()
     }
     const importJson = () => {
         setImportVisible(() => true)
@@ -350,31 +352,23 @@ export default function() {
             }
         }
     }
-    const editData = (index: number) => {
-        jsonGroup = data[index].data
-        setActIndex(() => index)
+    const editData = (id: string) => {
+        const one = data.find(item => item.id === id)
+        jsonGroup = one.data
+        setActId(() => id)
         setObjGroup(() => jsonGroup.toJson())
+        merify(0)
     }
-    const removeOne = (index: number) => {
-        Modal.confirm({
-            title: '警告',
-            okText: '确定',
-            cancelText: '取消',
-            content: '确定删除该项吗？删除不可恢复',
-            onOk: () => {
-                setData(data => {
-                    data.splice(index, 1)
-                    return [...data]
-                })
-                if (actIndex === index) {
-                    clear()
-                } else if (actIndex > index) {
-                    setActIndex(() => actIndex - 1)
-                }
-                message.success('删除成功')
-            },
-            onCancel(){}
+    const removeOne = (index: number, id: string) => {
+        if (actId === id) {
+            clear()
+            setActId(() => '')
+        }
+        setData(data => {
+            data.splice(index, 1)
+            return [...data]
         })
+        message.success('删除成功')
     }
     const removeData = (id: string[]) => {
         if (!id.length) {
@@ -382,9 +376,14 @@ export default function() {
             return;
         }
         id.forEach(id => {
+            if (actId === id) {
+                clear()
+                setActId(() => '')
+            }
             data.splice(data.findIndex(item => item.id === id), 1)
         })
         setData(() => [...data])
+        message.success('删除成功')
     }
     const pack = (id: string[], items: TellrawData[]) => {
         if (id.length < 1) {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Button, Select, Input, Row, Col, message, Radio, Modal, Icon, Tooltip } from "antd";
+import { Button, Select, Input, Row, Col, message, Radio, Modal, Icon, Tooltip, AutoComplete } from "antd";
 import { JsonGroup } from "../../lib/tellraw";
 import './index.scss'
 import { ITileProps, textType } from "../../lib/tellraw/JsonTile";
@@ -139,6 +139,7 @@ export default function() {
             data: jsonGroup,
             time: jsonGroup.updateTime().getTime(),
             mark: jsonGroup.getMark() ? jsonGroup.getMark() : jsonGroup.getTiles()[0].getText(),
+            id: Math.random().toString(36).slice(3),
         }
         if (actIndex > -1) {
             data.splice(actIndex, 1, newData)
@@ -351,7 +352,7 @@ export default function() {
         setActIndex(() => index)
         setObjGroup(() => jsonGroup.toJson())
     }
-    const removeData = (index: number) => {
+    const removeOne = (index: number) => {
         Modal.confirm({
             title: '警告',
             okText: '确定',
@@ -371,6 +372,41 @@ export default function() {
             },
             onCancel(){}
         })
+    }
+    const removeData = (id: string[]) => {
+        if (!id.length) {
+            message.warning('请至少选择1项')
+            return;
+        }
+        id.forEach(id => {
+            data.splice(data.findIndex(item => item.id === id), 1)
+        })
+        setData(() => [...data])
+    }
+    const pack = (id: string[], items: TellrawData[]) => {
+        if (id.length < 1) {
+            message.warning('请至少选择两项')
+            return;
+        }
+        const firstIndex = data.findIndex(item => item.id === items[0].id)
+        id.forEach(id => {
+            data.splice(data.findIndex(item => item.id === id), 1)
+        })
+        data.splice(firstIndex, 0, ...items)
+        setData(() => [...data])
+    }
+    const move = (items: TellrawData[]) => {
+        if (!items.length) {
+            message.warning('请至少选择一项')
+            return;
+        }
+        const firstOne = items[0]
+        const lastOne = items[items.length - 1]
+        const firstIndex = data.findIndex(item => item === firstOne)
+        const lastIndex = data.findIndex(item => item === lastOne)
+        const start = (firstIndex === 0 ? data.length : firstIndex) - 1
+        data.splice(start, 0, ...data.splice(firstIndex, lastIndex - firstIndex + 1))
+        setData(() => [...data])
     }
     const openParse = () => {
         setParseVisible(() => true)
@@ -476,16 +512,16 @@ export default function() {
                         <Col style={{ textAlign: 'right', lineHeight: '30px' }} span={3}>操作：</Col>
                         <Col span={18}>
                             <Button.Group style={{ float: 'left' }}>
-                                <Button style={{ width: 65 }} type='primary' onClick={add}>新增</Button>
-                                <Button disabled={nbt.option !== 'text'} style={{ width: 65 }} onClick={editPro}>拆分</Button>
-                                <Button style={{ width: 65, color: 'red' }} onClick={remove}>删除</Button>
+                                <Button style={{ width: 65 }} type='primary' onClick={add} title='shift+enter'>新增</Button>
+                                <Button disabled={nbt.option !== 'text'} style={{ width: 65 }} title='ctrl+k' onClick={editPro}>拆分</Button>
+                                <Button style={{ width: 65, color: 'red' }} onClick={remove} title='ctrl+delete'>删除</Button>
                                 <Button style={{ width: 65, color: 'red' }} onClick={clear}>清空</Button>
-                                <Button style={{ width: 65 }} onClick={cancel}>取消</Button>
-                                <Button style={{ width: 65 }} onClick={generate.bind(null, null, true)}>生成</Button>
-                                <Button style={{ width: 65 }} onClick={save}>保存</Button>
+                                <Button style={{ width: 65 }} onClick={cancel} title='esc'>取消</Button>
+                                <Button style={{ width: 65 }} onClick={generate.bind(null, null, true)} title='ctrl+g'>生成</Button>
+                                <Button style={{ width: 65 }} onClick={save} title='ctrl+shift+s'>暂存</Button>
                                 <Button style={{ width: 65 }} onClick={importJson}>导入</Button>
                                 <Button style={{ width: 65 }} onClick={exportJson}>导出</Button>
-                                <Button style={{ width: 65 }} type='primary' onClick={open}>输出</Button>
+                                <Button style={{ width: 65 }} type='primary' onClick={open} title='ctrl+p'>仓库</Button>
                             </Button.Group>
                         </Col>
                     </Row>
@@ -493,11 +529,11 @@ export default function() {
                         <Col style={{ textAlign: 'right', lineHeight: '30px' }} span={3}>样式：</Col>
                         <Col span={18}>
                             <Button.Group style={{ paddingRight: 10 }}>
-                                <Button style={{ width: 65 }} type={nbt.bold ? 'primary' : 'default'} onClick={clickHandle.bind(null, 'bold')}>粗体</Button>
-                                <Button style={{ width: 65 }} type={nbt.italic ? 'primary' : 'default'} onClick={clickHandle.bind(null, 'italic')}>斜体</Button>
-                                <Button style={{ width: 65 }} type={nbt.underlined ? 'primary' : 'default'} onClick={clickHandle.bind(null, 'underlined')}>下划线</Button>
-                                <Button style={{ width: 65 }} type={nbt.strikethrough ? 'primary' : 'default'} onClick={clickHandle.bind(null, 'strikethrough')}>删除线</Button>
-                                <Button style={{ width: 65 }} type={nbt.obfuscated ? 'primary' : 'default'} onClick={clickHandle.bind(null, 'obfuscated')}>混淆</Button>
+                                <Button style={{ width: 65 }} type={nbt.bold ? 'primary' : 'default'} onClick={clickHandle.bind(null, 'bold')} title='ctrl+b'>粗体</Button>
+                                <Button style={{ width: 65 }} type={nbt.italic ? 'primary' : 'default'} onClick={clickHandle.bind(null, 'italic')} title='ctrl+i'>斜体</Button>
+                                <Button style={{ width: 65 }} type={nbt.underlined ? 'primary' : 'default'} onClick={clickHandle.bind(null, 'underlined')} title='ctrl+u'>下划线</Button>
+                                <Button style={{ width: 65 }} type={nbt.strikethrough ? 'primary' : 'default'} onClick={clickHandle.bind(null, 'strikethrough')} title='ctrl+s'>删除线</Button>
+                                <Button style={{ width: 65 }} type={nbt.obfuscated ? 'primary' : 'default'} onClick={clickHandle.bind(null, 'obfuscated')} title='ctrl+o'>混淆</Button>
                             </Button.Group>
                             <span>
                                 字体颜色：<SelectColor value={nbt.color}  onChange={colorChange} />
@@ -517,9 +553,6 @@ export default function() {
                                         <Select.Option value='change_page'>切换页码</Select.Option>
                                     </Select>
                                 }
-                                // addonAfter={
-                                //     <div style={{ width: 68, cursor: 'pointer' }}>预置命令</div>
-                                // }
                                 placeholder='选填'
                                 allowClear
                                 value={nbt.clickEvent && nbt.clickEvent.value}
@@ -573,13 +606,15 @@ export default function() {
                         </Col>
                     </Row>
                 </div>
-
             </div>
             <Output
                 generate={generate}
                 fillHover={fillHover}
                 editData={editData}
-                removeData={removeData}
+                removeOne={removeOne}
+                remove={removeData}
+                pack={pack}
+                move={move}
                 visible={visible}
                 data={data}
                 onClose={onClose} />

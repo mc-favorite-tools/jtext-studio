@@ -91,7 +91,7 @@ export default function(props: IProps) {
             title='解析nbt' >
             <Row style={{ marginBottom: 10 }}>
                 <Col span={3}>
-                    <span>nbt：</span>
+                    <span style={{ lineHeight: '32px' }}>nbt：</span>
                 </Col>
                 <Col span={21}>
                     <Input.Search allowClear enterButton="解析" autoFocus ref={inputRef} spellCheck={false} onSearch={onSearch} placeholder='请输入' />
@@ -99,7 +99,7 @@ export default function(props: IProps) {
             </Row>
             <Row>
                 <Col span={3}>
-                    <span>路径：</span>
+                    <span style={{ lineHeight: '32px' }}>路径：</span>
                 </Col>
                 <Col span={21}>
                     <TreeSelect

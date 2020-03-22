@@ -2,18 +2,21 @@ import React, { useState, useRef, useEffect } from "react";
 import { Modal, Input, TreeSelect, message, Row, Col } from "antd";
 import Nbt from "../../lib/parse";
 import Search from "antd/lib/input/Search";
+import { nbtType } from "../../lib/tellraw/JsonTile";
 
 interface IProps {
     visible: boolean,
     onCancel?: () => void,
-    onSubmit?: (value: string, id: string) => void,
+    onSubmit?: (path: string, value: string, type: nbtType) => void,
 }
 export default function(props: IProps) {
-    const [value, setValue] = useState([])
+    const [path, setPath] = useState([])
     const [data, setData] = useState([])
+    const [select, setSelect] = useState('')
     const inputRef = useRef<Search>()
-    const idRef = useRef<string>('')
-
+    const valueRef = useRef<string>('')
+    const typeRef = useRef<nbtType>('entity')
+    
     const handleCancel = () => {
         if (props.onCancel) {
             props.onCancel()
@@ -21,10 +24,10 @@ export default function(props: IProps) {
     }
     const handleSuibmit = () => {
         if (props.onSubmit) {
-            const result = value.reduce<string>((s, v) => {
+            const result = path.reduce<string>((s, v) => {
                return s += (Array.isArray(v) ? `${v[0]}[${v[1]}]` : v) + '.'
             }, '')
-            props.onSubmit(result.slice(0, -1), idRef.current)
+            props.onSubmit(result.slice(0, -1), valueRef.current, typeRef.current)
         }
     }
     useEffect(() => {
@@ -66,12 +69,22 @@ export default function(props: IProps) {
             if (index === -1) {
                 message.error('请输入合法的nbt')
             } else {
-                const match = value.match(/summon minecraft:(\w+)/)
-                if (match) {
-                    idRef.current = match[1]
+                if (value.startsWith('/setblock')) {
+                    const match = value.match(/setblock (.+) minecraft/)
+                    if (match) {
+                        valueRef.current = match[1]
+                        typeRef.current = 'block'
+                    }
+                } else if (value.startsWith('/summon')) {
+                    const match = value.match(/summon minecraft:(\w+)/)
+                    if (match) {
+                        valueRef.current = match[1]
+                        typeRef.current = 'entity'
+                    }
                 }
                 const data = Nbt.parse(value.slice(index))
                 setData(() => data)
+                setSelect(() => '')
                 message.success('解析成功，请选择需要的路径')
             }
         } catch (error) {
@@ -79,7 +92,9 @@ export default function(props: IProps) {
         }
     }
     const onSelect = (_: any, treeNode: any) => {
-        setValue(() => treeNode.props.path)
+        const path = treeNode.props.path
+        setSelect(() => path)
+        setPath(() => path)
     }
     return (
         <Modal
@@ -107,6 +122,7 @@ export default function(props: IProps) {
                         notFoundContent='暂无内容可选'
                         style={{ width: '100%' }} 
                         onSelect={onSelect}
+                        value={select}
                         placeholder='请选择'>
                         {createSelectNode(data)}
                     </TreeSelect>

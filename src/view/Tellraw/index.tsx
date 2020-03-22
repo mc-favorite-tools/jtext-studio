@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Button, Select, Input, Row, Col, message, Radio, Modal, Icon, Tooltip, AutoComplete } from "antd";
 import { JsonGroup } from "../../lib/tellraw";
 import './index.scss'
-import { ITileProps, textType } from "../../lib/tellraw/JsonTile";
+import { ITileProps, textType, nbtType } from "../../lib/tellraw/JsonTile";
 import color from "../../lib/tellraw/color";
 import { RGBColor } from "react-color";
 import copy from 'copy-to-clipboard';
@@ -283,10 +283,13 @@ export default function() {
     }
     const nbtOptChange = (e: any) => {
         const tile = jsonGroup.actTile
+        const value = e.target.value
         if (tile.getNbtOption() === 'block') {
-            tile.setBlock(e.target.value)
+            tile.setBlock(value)
+        } else if (tile.getNbtOption() === 'entity') {
+            tile.setEntity(value)
         } else {
-            tile.setEntity(e.target.value)
+            tile.setStorage(value)
         }
         setNbt(() => tile.toJson())
     }
@@ -414,12 +417,18 @@ export default function() {
     const parseCancel = () => {
         setParseVisible(() => false)
     }
-    const parseSubmit = (value: string, id: string) => {
-        if (value) {
-            jsonGroup.actTile.setNbt(value)
-            if (id && jsonGroup.actTile.getEntity() === '') {
-                jsonGroup.actTile.setEntity(`@e[type=${id},limit=1,sort=nearest]`)
+    const parseSubmit = (path: string, value: string, type: nbtType) => {
+        if (path) {
+            jsonGroup.actTile.setNbt(path)
+            if (value) {
+                if (!jsonGroup.actTile.getEntity() && type === 'entity') {
+                    jsonGroup.actTile.setEntity(`@e[type=${value},limit=1,sort=nearest]`)
+                }
+                if (!jsonGroup.actTile.getBlock() && type === 'block') {
+                    jsonGroup.actTile.setBlock(value)
+                }
             }
+            type && jsonGroup.actTile.setNbtOption(type)
             setNbt(() => jsonGroup.actTile.toJson())
             setParseVisible(() => false)
         } else {
@@ -446,7 +455,7 @@ export default function() {
                         <Input
                             spellCheck={false}
                             placeholder='必填项，请输入'
-                            value={nbt.nbtOption === 'block' ? nbt.block : nbt.entity}
+                            value={nbt.nbtOption === 'block' ? nbt.block : nbt.nbtOption === 'entity' ? nbt.entity : nbt.storage}
                             onChange={nbtOptChange}
                             addonBefore={
                             <Select defaultValue='entity' value={nbt.nbtOption} onChange={nbtSelectChange} style={{ width: 75 }}>

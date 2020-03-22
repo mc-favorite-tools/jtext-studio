@@ -312,7 +312,7 @@ export default class JsonTile {
             let str = ''
             if (nbt) {
                 str += `{"nbt":"${nbt}",`
-                if (nbtOption === 'block') {
+                if (nbtOption === 'storage') {
                     str += `"storage":"${storage}",`
                 } else if (nbtOption === 'entity') {
                     str += `"entity":"${entity}",`

@@ -27,10 +27,10 @@ export default class HoverEvent extends EventBase {
     }
     public setPro(pro: number) {
         if (pro === undefined) {
-            return
+            return this
         } else if (pro === 0 || pro === 1) {
             this.pro = pro
-            return
+            return this
         }
         throw new TypeError('pro字段类型错误，应该是0或者1')
     }
@@ -45,6 +45,7 @@ export default class HoverEvent extends EventBase {
         //     this.parse()
         // }
         this.value = value
+        return this
     }
     // public parse() {
     //     if (!this.value.trim()) {

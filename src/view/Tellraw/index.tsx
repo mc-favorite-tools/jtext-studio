@@ -113,15 +113,21 @@ export default function() {
             scoreRef.current.focus()
         }
     }
-    const generate = (index: number) => {
-        if (jsonGroup.hasEmpty()) {
-            message.warning('前先添加一项')
+    const generate = (index: number, isValid = true) => {
+        if (isValid && jsonGroup.hasEmpty()) {
+            message.warning('请先添加一项')
             return;
         }
         const G = index == null ? jsonGroup : data[index].data
         const nbtString = `["",${G.toString().trimEnd(',')}]`;
         copy(nbtString);
         message.success('已复制到剪贴板');
+    }
+    const fillHover = (index: number) => {
+        const G = data[index].data.toString()
+        const nbtString = `["",${G.toString().trimEnd(',')}]`;
+        jsonGroup.actTile.getHoverEvent().setPro(1).setValue(nbtString)
+        update()
     }
     const save = () => {
         if (jsonGroup.hasEmpty()) {
@@ -169,7 +175,7 @@ export default function() {
     const textKeyDown = (e: any) => {
         const k = e.key.toLowerCase();
         if (jsonGroup.actTile) {
-            if (e.ctrlKey) {
+            if (e.ctrlKey && !e.shiftKey && !e.altKey) {
                 if (k === 'b') {
                     e.preventDefault()
                     jsonGroup.actTile.change('bold');
@@ -218,7 +224,7 @@ export default function() {
                     e.preventDefault()
                     editPro();
                 }
-            } else if (e.shiftKey) {
+            } else if (e.shiftKey && !e.ctrlKey && !e.altKey) {
                 if (k === 'enter') {
                     e.preventDefault()
                     add()
@@ -228,9 +234,17 @@ export default function() {
                 cancel()
             }
         }
-        if (e.ctrlKey && k === 'p') {
-            e.preventDefault()
-            open()
+        if (e.ctrlKey) {
+            if (k === 'p') {
+                e.preventDefault()
+                open()
+            }
+            if (e.shiftKey) {
+                if (k === 's') {
+                    e.preventDefault()
+                    save()
+                }
+            }
         }
     }
     const cmdSelectChange = (action: string) => {
@@ -388,7 +402,7 @@ export default function() {
                             value={nbt.nbt}
                             spellCheck={false}
                             onChange={nbtChange}
-                            suffix={<Tooltip title='解析一段合法的nbt标签'><span onClick={openParse} style={{ cursor: 'pointer' }}>解析</span></Tooltip>}
+                            suffix={<Tooltip title='解析一段合法的nbt标签'><span onClick={openParse} style={{ cursor: 'pointer', color: '#1890ff' }}>解析</span></Tooltip>}
                             addonBefore={<div style={{ width: 53, textAlign: 'left' }}>nbt</div>}
                             placeholder='必填项，请输入' />
                     </div>
@@ -467,7 +481,7 @@ export default function() {
                                 <Button style={{ width: 65, color: 'red' }} onClick={remove}>删除</Button>
                                 <Button style={{ width: 65, color: 'red' }} onClick={clear}>清空</Button>
                                 <Button style={{ width: 65 }} onClick={cancel}>取消</Button>
-                                <Button style={{ width: 65 }} onClick={generate.bind(null, null)}>生成</Button>
+                                <Button style={{ width: 65 }} onClick={generate.bind(null, null, true)}>生成</Button>
                                 <Button style={{ width: 65 }} onClick={save}>保存</Button>
                                 <Button style={{ width: 65 }} onClick={importJson}>导入</Button>
                                 <Button style={{ width: 65 }} onClick={exportJson}>导出</Button>
@@ -563,6 +577,7 @@ export default function() {
             </div>
             <Output
                 generate={generate}
+                fillHover={fillHover}
                 editData={editData}
                 removeData={removeData}
                 visible={visible}

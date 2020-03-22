@@ -14,14 +14,12 @@ interface IProps {
     data: TellrawData[],
     editData: (index: number) => void,
     removeData: (index: number) => void,
-    generate: (index: number) => void,
+    generate: (index: number, valid: boolean) => void,
+    fillHover: (index: number) => void,
 }
 export default function(props: IProps) {
     const [selectedRowKeys, setSelectedRowKeys] = useState([])
     const [selectedRowItems, setSelectedRowItems] = useState<TellrawData[]>([])
-    const generate = () => {
-        
-    }
     const toTellraw = () => {
         if (selectedRowKeys.length) {
             const result = selectedRowItems.reduce((s, e) => {
@@ -96,13 +94,13 @@ export default function(props: IProps) {
             key: 'action',
             dataIndex: 'action',
             fixed: 'right',
-            width: 150,
             title: '操作',
             render: (_: string, __: TellrawData, index: number) => {
                 return (
                     <div>
                         <a style={{ marginRight: 8 }} onClick={props.editData.bind(null, index)}>编辑</a>
-                        <a style={{ marginRight: 8 }} onClick={props.generate.bind(null, index)}>生成</a>
+                        <a style={{ marginRight: 8 }} onClick={props.generate.bind(null, index, false)}>生成</a>
+                        <a style={{ marginRight: 8 }} title='启用hover高级模式，并填充当前项' onClick={props.fillHover.bind(null, index)}>hover</a>
                         <a onClick={props.removeData.bind(null, index)}>删除</a>
                         {/* <a onClick={preview.bind(null, record)}>预览</a> */}
                     </div>

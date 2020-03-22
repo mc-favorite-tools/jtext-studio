@@ -51,7 +51,7 @@ export default function(props: IProps) {
             key: 'action',
             dataIndex: 'action',
             fixed: 'right',
-            width: 150,
+            width: 180,
             title: '操作',
             render: (_: string, __: CmdProps, index: number) => {
                 return (

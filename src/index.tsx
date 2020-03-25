@@ -12,12 +12,14 @@ ReactDOM.render(
         <h1>
             JText Studio
             <span>匠心打造，追求极致</span>
+            <div className='right'>
+                <a href="https://gitee.com/hans000/JText-Studio" target='_blank'>使用文档</a>
+                <a href="https://gitee.com/hans000/JText-Studio/issues" target='_blank'> 问题反馈</a>
+                <a href="https://gitee.com/hans000/JText-Studio/blob/master/log.md" target='_blank'> 更新日志</a>
+            </div>
         </h1>
-        <Tellraw />
-        <div style={{ textAlign: 'center', position: 'fixed', bottom: 5, width: '100%' }}>
-            <a href="https://gitee.com/hans000/JText-Studio" target='_blank'>使用文档</a> | 
-            <a href="https://gitee.com/hans000/JText-Studio/issues" target='_blank'> 问题反馈</a> | 
-            <a href="https://gitee.com/hans000/JText-Studio/blob/master/log.md" target='_blank'> 更新日志</a> - by hans
+        <div className="cont">
+            <Tellraw />
         </div>
     </div>
     , document.getElementById('root'),

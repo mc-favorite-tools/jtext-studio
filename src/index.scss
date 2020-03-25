@@ -2,6 +2,17 @@
   margin: 0;
   padding: 0;
 }
+body {
+  background-color: #000;
+}
+#root {
+  background: url('/bg.png') no-repeat fixed center center;
+  min-height: 100vh;
+  .cont {
+    margin: 0 80px;
+    overflow: hidden;
+  }
+}
 ul {
   list-style: none;
 }
@@ -9,8 +20,19 @@ h1 {
   background-color: #000000;
   color: #fff;
   padding-left: 50px;
-  span {
+  margin: 0;
+  >span {
     padding-left: 20px;
     font-size: 16px;
+  }
+  .right {
+    float: right;
+    margin-right: 50px;
+    font-size: 14px;
+    line-height: 40px;
+    a {
+      color: white;
+      padding-right: 16px;
+    }
   }
 }

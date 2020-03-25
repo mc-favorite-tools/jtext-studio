@@ -500,8 +500,8 @@ export default function() {
             <Import visible={importVisible} onCancel={importCancel} onSubmit={importSubmit} />
             <Parse visible={parseVisible} onCancel={parseCancel} onSubmit={parseSubmit} />
             <Row>
-                <Col style={{ textAlign: 'right', lineHeight: '30px' }} span={3}>预览：</Col>
-                <Col span={18}>
+                <Col style={{ textAlign: 'right', lineHeight: '30px' }} span={2}>预览：</Col>
+                <Col span={20}>
                     <JsonView
                         className='mc-tellraw-view'
                         style={{ backgroundColor: getColor(bgColor), height: 180, overflowY: 'auto' }}
@@ -517,8 +517,8 @@ export default function() {
             <div className='mc-tellraw-cont'>
                 <div className='mc-tellraw-right-bar'>
                     <Row className='group'>
-                        <Col style={{ textAlign: 'right', lineHeight: '30px' }} span={3}>操作：</Col>
-                        <Col span={18}>
+                        <Col style={{ textAlign: 'right', lineHeight: '30px' }} span={2}>操作：</Col>
+                        <Col span={20}>
                             <Button.Group style={{ float: 'left' }}>
                                 <Button style={{ width: 65 }} type='primary' onClick={add} title='shift+enter'>新增</Button>
                                 <Button disabled={nbt.option !== 'text'} style={{ width: 65 }} title='ctrl+k' onClick={editPro}>拆分</Button>
@@ -534,8 +534,8 @@ export default function() {
                         </Col>
                     </Row>
                     <Row className='group'>
-                        <Col style={{ textAlign: 'right', lineHeight: '30px' }} span={3}>样式：</Col>
-                        <Col span={18}>
+                        <Col style={{ textAlign: 'right', lineHeight: '30px' }} span={2}>样式：</Col>
+                        <Col span={20}>
                             <Button.Group style={{ paddingRight: 10 }}>
                                 <Button style={{ width: 65 }} type={nbt.bold ? 'primary' : 'default'} onClick={clickHandle.bind(null, 'bold')} title='ctrl+b'>粗体</Button>
                                 <Button style={{ width: 65 }} type={nbt.italic ? 'primary' : 'default'} onClick={clickHandle.bind(null, 'italic')} title='ctrl+i'>斜体</Button>
@@ -549,8 +549,8 @@ export default function() {
                         </Col>
                     </Row>
                     <Row style={{ marginBottom: 10 }}>
-                        <Col span={3} style={{ textAlign: "right", paddingTop: 4 }}>点击click：</Col>
-                        <Col span={18}>
+                        <Col span={2} style={{ textAlign: "right", paddingTop: 4 }}>点击click：</Col>
+                        <Col span={20}>
                             <Input
                                 addonBefore={
                                     <Select onChange={cmdSelectChange} value={nbt.clickEvent && nbt.clickEvent.action} defaultValue='run_command' style={{ width: 100 }}>
@@ -568,8 +568,8 @@ export default function() {
                         </Col>
                     </Row>
                     <Row style={{ marginBottom: 10 }}>
-                        <Col span={3} style={{ textAlign: "right", paddingTop: 4 }}>悬浮hover：</Col>
-                        <Col span={18}>
+                        <Col span={2} style={{ textAlign: "right", paddingTop: 4 }}>悬浮hover：</Col>
+                        <Col span={20}>
                             <Input
                                 addonBefore={
                                     <Select onChange={hoverSelectChange} value={nbt.hoverEvent && nbt.hoverEvent.action} defaultValue='show_text' style={{ width: 100 }}>
@@ -596,8 +596,8 @@ export default function() {
                         </Col>
                     </Row>
                     <Row style={{ marginBottom: 10 }}>
-                        <Col span={3} style={{ textAlign: "right", paddingTop: 4 }}>可选类型：</Col>
-                        <Col span={18}>
+                        <Col span={2} style={{ textAlign: "right", paddingTop: 4 }}>可选类型：</Col>
+                        <Col span={20}>
                             <Radio.Group defaultValue='text' value={nbt.option} onChange={optChange} style={{ marginBottom: 10}}>
                                 <Radio key='text' value="text">text</Radio>
                                 <Radio key='nbt' value="nbt">nbt</Radio>
@@ -608,8 +608,8 @@ export default function() {
                         </Col>
                     </Row>
                     <Row style={{ marginBottom: 10 }}>
-                        <Col span={3} style={{ textAlign: "right", paddingTop: 4 }}>备注：</Col>
-                        <Col span={18}>
+                        <Col span={2} style={{ textAlign: "right", paddingTop: 4 }}>备注：</Col>
+                        <Col span={20}>
                             <Input maxLength={20} placeholder='选填' value={objGroup.mark} onChange={markChange} />
                         </Col>
                     </Row>

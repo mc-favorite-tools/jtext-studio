@@ -12,7 +12,7 @@ interface IProps {
 export default function(props: IProps) {
     const [path, setPath] = useState([])
     const [data, setData] = useState([])
-    const [select, setSelect] = useState('')
+    const [select, setSelect] = useState(undefined)
     const inputRef = useRef<Search>()
     const valueRef = useRef<string>('')
     const typeRef = useRef<nbtType>('entity')
@@ -103,7 +103,7 @@ export default function(props: IProps) {
             onOk={handleSuibmit}
             okText='确定'
             cancelText='取消'
-            title='解析nbt' >
+            title='游戏中F3 + i复制nbt' >
             <Row style={{ marginBottom: 10 }}>
                 <Col span={3}>
                     <span style={{ lineHeight: '32px' }}>nbt：</span>

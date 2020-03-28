@@ -1,4 +1,6 @@
 .json-view {
+    // background-image: url(/bg.png);
+    font-size: 16px;
     &-color {
         position: absolute;
         top: 5px;
@@ -29,21 +31,6 @@
             font-size: 12px;
             color: #cccccc;
         }
-        // &.nbt {
-        //     border-radius: 3px;
-        //     color: #fff !important;
-        //     background-color: #11b367;
-        // }
-        // &.selector {
-        //     border-radius: 3px;
-        //     color: #fff !important;
-        //     background-color: #9311b3;
-        // }
-        // &.score {
-        //     border-radius: 3px;
-        //     color: #fff !important;
-        //     background-color: #115db3;
-        // }
     }
 }
 

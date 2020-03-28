@@ -36,7 +36,7 @@ export default function(props: IProps) {
         setVisible(() => false)
     }
     return (
-        <div style={props.style} className='select-color'>
+        <div style={props.style} title='ctrl+⇅' className='select-color'>
             <div onClick={showBar} className='select-color-watch'>
                 <div style={{ backgroundColor: getColorById(value) }} className="select-color-tile"></div>
             </div>

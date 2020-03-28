@@ -215,7 +215,7 @@ export default class JsonTile {
             obj['color'] = '#' + fc
         }
         if (this.bold) {
-            obj['fontWeight'] = 600
+            obj['fontWeight'] = 700
         }
         if (this.italic) {
             obj['fontStyle'] = 'italic'

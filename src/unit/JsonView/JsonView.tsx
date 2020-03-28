@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { ITileProps, ITextStyle } from "../../lib/tellraw/JsonTile";
 import ColorPicker from "../ColorPicker";
 import { RGBColor } from "react-color";
@@ -37,11 +37,6 @@ export default function(props: IProps) {
             targetNode.classList.add('drag-enter');
         }
     }
-    const onDragleave = (index: number, e: any) => {
-        // if (actIndex !== index) {
-        //     targetNode.classList.remove('drag-enter');
-        // }
-    }
     const onDragEnd = (e: any) => {
         if (toIndex !== -1) {
             props.posChange(toIndex);
@@ -73,7 +68,6 @@ export default function(props: IProps) {
                                     onDragOver={(e) => e.preventDefault()}
                                     onDragStart={onDragStart.bind(null, index)}
                                     onDragEnd={onDragEnd}
-                                    onDragLeave={onDragleave.bind(null, index)}
                                     onDragEnter={onDragEnter.bind(null, index)}
                                     style={{...attr}} className={cls} key={index}
                                     onClick={props.onClick.bind(null, index)}>
@@ -96,7 +90,6 @@ export default function(props: IProps) {
                                 onDragOver={(e) => e.preventDefault()}
                                 onDragStart={onDragStart.bind(null, index)}
                                 onDragEnd={onDragEnd}
-                                onDragLeave={onDragleave.bind(null, index)}
                                 onDragEnter={onDragEnter.bind(null, index)}
                                 style={{...attr}}
                                 className={cls}

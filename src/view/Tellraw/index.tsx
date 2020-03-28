@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Button, Select, Input, Row, Col, message, Radio, Modal, Icon, Tooltip, AutoComplete } from "antd";
+import { Button, Select, Input, Row, Col, message, Radio, Tooltip, notification } from "antd";
 import { JsonGroup } from "../../lib/tellraw";
 import './index.scss'
 import { ITileProps, textType, nbtType } from "../../lib/tellraw/JsonTile";
@@ -13,10 +13,14 @@ import TileError from "../../util/TileError";
 import { SelectColor } from "../../unit/SelectColor";
 import TextArea from "antd/lib/input/TextArea";
 import Parse from "./Parse";
+import getToolTips, { MsgTips } from "../../tool/toolTips";
 
-let jsonGroup = new JsonGroup(null);
-jsonGroup.add()
+const duration = 5 * 60 * 1000;
 const initColor = {r: 248, g: 233, b: 204, a: 1};
+const toolTips = getToolTips()
+let jsonGroup = new JsonGroup(null);
+
+jsonGroup.add()
 
 export default function() {
     const [nbt, setNbt] = useState<ITileProps>({});
@@ -33,15 +37,51 @@ export default function() {
     const scoreRef = useRef<Input>()
 
     useEffect(() => {
-        window.addEventListener('keydown', textKeyDown)
+        window.addEventListener('keydown', textKeyDown);
+        toolTips.showTips(MsgTips.welcome);
+        const timer = setTimeout(() => {
+            const rate = toolTips.getRate()
+            if (rate < 0.5) {
+                toolTips.showTips(MsgTips.video)
+            } else if (rate > 0.8) {
+                toolTips.showTips(MsgTips.share)
+            }
+            clearTimeout(timer)
+        }, duration)
         update()
         return () => {
+            clearTimeout(timer)
             window.removeEventListener('keydown', textKeyDown)
         }
     }, [])
-    const clickHandle = (type: textType) => {
+
+    useEffect(() => {
+        if (toolTips.getRate() === 1) {
+            return;
+        }
+        const text = jsonGroup.actTile.getText()
+        const tiles = jsonGroup.getTiles()
+        const color = jsonGroup.actTile.getColor()
+        if (text.length > 4) {
+            toolTips.showTips(MsgTips.add)
+        } else if (text.includes('\n')) {
+            toolTips.showTips(MsgTips.split)
+        } else if (tiles.length > 3 && tiles.length <= 5) {
+            toolTips.showTips(MsgTips.style)
+        } else if (tiles.length > 5 && tiles.length <= 7) {
+            toolTips.showTips(MsgTips.save)
+        } else if (tiles.length > 7) {
+            toolTips.showTips(MsgTips.drag)
+        } else if (color === 'aqua' || color === 'green') {
+            toolTips.showTips(MsgTips.color)
+        } else if (jsonGroup.actTile.getOption() === 'nbt') {
+            toolTips.showTips(MsgTips.nbtPath)
+        }
+    })
+    const changeStyle = (type: textType) => {
         jsonGroup.actTile.change(type);
-        update()
+        update();
+        notification.close('styleMsg')
     }
     const update = () => {
         setNbt(() => {
@@ -57,6 +97,7 @@ export default function() {
             message.warn(`请选择一个非空项`)
         } else {
             jsonGroup.editPro()
+            notification.close('splitMsg')
             update()
         }
     }
@@ -70,7 +111,6 @@ export default function() {
     }
     const cancel = () => {
         if (jsonGroup.actTile.isEmpty() && jsonGroup.hasEmpty()) {
-            message.warn(`必填项为空，请填写`)
             return;
         }
         jsonGroup.setActTile(-1)
@@ -149,7 +189,7 @@ export default function() {
         } else {
             setData(data => [...data, newData])
         }
-        message.success('保存成功')
+        message.success('入库成功')
         clear()
     }
     const open = () => {
@@ -229,6 +269,7 @@ export default function() {
             } else if (e.shiftKey && !e.ctrlKey && !e.altKey) {
                 if (k === 'enter') {
                     e.preventDefault()
+                    notification.close('addMsg')
                     add()
                 }
             } else if (k === 'escape') {
@@ -328,9 +369,10 @@ export default function() {
     }
     const exportJson = () => {
         if (jsonGroup.hasEmpty()) {
-            message.success('空空如也~，快去添加吧')
+            message.warning('空空如也~，快去添加吧')
         } else {
             copy(JSON.stringify(jsonGroup.export()))
+            toolTips.showTips(MsgTips.export)
             message.success('已复制到剪贴板')
         }
     }
@@ -344,6 +386,7 @@ export default function() {
             setImportVisible(() => false)
             message.success('导入成功')
             setObjGroup(() => jsonGroup.toJson())
+            jsonGroup.setActTile(0)
         } catch (error) {
             if (error instanceof TileError) {
                 message.error(error.toString())
@@ -412,6 +455,7 @@ export default function() {
     }
     const openParse = () => {
         setParseVisible(() => true)
+        notification.close('nbtPathMsg')
     }
     const parseCancel = () => {
         setParseVisible(() => false)
@@ -504,7 +548,7 @@ export default function() {
                 <Col span={20}>
                     <JsonView
                         className='mc-tellraw-view'
-                        style={{ backgroundColor: getColor(bgColor), height: 180, overflowY: 'auto' }}
+                        style={{ backgroundColor: getColor(bgColor), minHeight: 180, maxHeight: 240, overflowY: 'auto' }}
                         onClick={merify}
                         value={bgColor}
                         onChange={bgColorChange}
@@ -537,11 +581,11 @@ export default function() {
                         <Col style={{ textAlign: 'right', lineHeight: '30px' }} span={2}>样式：</Col>
                         <Col span={20}>
                             <Button.Group style={{ paddingRight: 10 }}>
-                                <Button style={{ width: 65 }} type={nbt.bold ? 'primary' : 'default'} onClick={clickHandle.bind(null, 'bold')} title='ctrl+b'>粗体</Button>
-                                <Button style={{ width: 65 }} type={nbt.italic ? 'primary' : 'default'} onClick={clickHandle.bind(null, 'italic')} title='ctrl+i'>斜体</Button>
-                                <Button style={{ width: 65 }} type={nbt.underlined ? 'primary' : 'default'} onClick={clickHandle.bind(null, 'underlined')} title='ctrl+u'>下划线</Button>
-                                <Button style={{ width: 65 }} type={nbt.strikethrough ? 'primary' : 'default'} onClick={clickHandle.bind(null, 'strikethrough')} title='ctrl+s'>删除线</Button>
-                                <Button style={{ width: 65 }} type={nbt.obfuscated ? 'primary' : 'default'} onClick={clickHandle.bind(null, 'obfuscated')} title='ctrl+o'>混淆</Button>
+                                <Button style={{ width: 65 }} type={nbt.bold ? 'primary' : 'default'} onClick={changeStyle.bind(null, 'bold')} title='ctrl+b'>粗体</Button>
+                                <Button style={{ width: 65 }} type={nbt.italic ? 'primary' : 'default'} onClick={changeStyle.bind(null, 'italic')} title='ctrl+i'>斜体</Button>
+                                <Button style={{ width: 65 }} type={nbt.underlined ? 'primary' : 'default'} onClick={changeStyle.bind(null, 'underlined')} title='ctrl+u'>下划线</Button>
+                                <Button style={{ width: 65 }} type={nbt.strikethrough ? 'primary' : 'default'} onClick={changeStyle.bind(null, 'strikethrough')} title='ctrl+s'>删除线</Button>
+                                <Button style={{ width: 65 }} type={nbt.obfuscated ? 'primary' : 'default'} onClick={changeStyle.bind(null, 'obfuscated')} title='ctrl+o'>混淆</Button>
                             </Button.Group>
                             <span>
                                 字体颜色：<SelectColor value={nbt.color}  onChange={colorChange} />

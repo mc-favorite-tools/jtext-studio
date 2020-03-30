@@ -30,7 +30,7 @@ export default function() {
     const [importVisible, setImportVisible] = useState(false);
     const [parseVisible, setParseVisible] = useState(false);
     const [data, setData] = useState<TellrawData[]>([]);
-    const [actId, setActId] = useState('');
+    const actIdRef = useRef<string>('')
     const textRef = useRef<TextArea>()
     const nbtRef = useRef<Input>()
     const selectorRef = useRef<Input>()
@@ -57,6 +57,9 @@ export default function() {
 
     useEffect(() => {
         if (toolTips.getRate() === 1) {
+            return;
+        }
+        if (!jsonGroup.actTile) {
             return;
         }
         const text = jsonGroup.actTile.getText()
@@ -181,14 +184,20 @@ export default function() {
             mark: jsonGroup.getMark() ? jsonGroup.getMark() : jsonGroup.getTiles()[0].getText(),
             id: Math.random().toString(36).slice(3),
         }
-        const index = data.findIndex(item => item.id === actId)
-        if (actId && index > -1) {
-            data.splice(index, 1, newData)
-            setData(() => [...data])
-            setActId(() => '')
-        } else {
-            setData(data => [...data, newData])
-        }
+        setData(data => {
+            const actId = actIdRef.current
+            if (!actId) {
+                return [...data, newData]
+            }
+            const index = data.findIndex(item => item.id === actId)
+            if (index > -1) {
+                data.splice(index, 1, { ...newData, id: actId })
+                actIdRef.current = ''
+                return [...data]
+            } else {
+                return [...data, newData]
+            }
+        })
         message.success('入库成功')
         clear()
     }
@@ -398,14 +407,14 @@ export default function() {
     const editData = (id: string) => {
         const one = data.find(item => item.id === id)
         jsonGroup = one.data
-        setActId(() => id)
+        actIdRef.current = id
         setObjGroup(() => jsonGroup.toJson())
         merify(0)
     }
     const removeOne = (index: number, id: string) => {
-        if (actId === id) {
+        if (actIdRef.current === id) {
             clear()
-            setActId(() => '')
+            actIdRef.current = ''
         }
         setData(data => {
             data.splice(index, 1)
@@ -419,9 +428,9 @@ export default function() {
             return;
         }
         id.forEach(id => {
-            if (actId === id) {
+            if (actIdRef.current === id) {
                 clear()
-                setActId(() => '')
+                actIdRef.current = ''
             }
             data.splice(data.findIndex(item => item.id === id), 1)
         })

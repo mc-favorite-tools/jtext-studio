@@ -57,7 +57,7 @@ export default class EditableTagGroup extends React.Component<IProps, IState> {
                     this.props.tags.map((tag, index) => {
                         const isLongTag = tag.length > 8;
                         const tagElem = (
-                            <Tag onClick={this.props.onClick.bind(null, tag)} key={tag} closable={index > 3} onClose={() => this.handleClose(tag)}>
+                            <Tag style={{ marginBottom: 8 }} onClick={this.props.onClick.bind(null, tag)} key={tag} closable={index > 3} onClose={() => this.handleClose(tag)}>
                                 {isLongTag ? `${tag.slice(0, 8)}...` : tag}
                             </Tag>
                         );

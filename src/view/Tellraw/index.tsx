@@ -14,6 +14,7 @@ import { SelectColor } from "../../unit/SelectColor";
 import TextArea from "antd/lib/input/TextArea";
 import Parse from "./Parse";
 import getToolTips, { MsgTips } from "../../tool/toolTips";
+import EditableTagGroup from "./EditableTag";
 
 const duration = 5 * 60 * 1000;
 const initColor = {r: 248, g: 233, b: 204, a: 1};
@@ -35,25 +36,31 @@ export default function() {
     const nbtRef = useRef<Input>()
     const selectorRef = useRef<Input>()
     const scoreRef = useRef<Input>()
+    const [tags, setTags] = useState<string[]>(['tellraw', 'sign', 'book', 'title'])
 
     useEffect(() => {
         window.addEventListener('keydown', textKeyDown);
         toolTips.showTips(MsgTips.welcome);
-        const timer = setTimeout(() => {
-            const rate = toolTips.getRate()
-            if (rate < 0.5) {
-                toolTips.showTips(MsgTips.video)
-            } else if (rate > 0.8) {
-                toolTips.showTips(MsgTips.share)
-            }
-            clearTimeout(timer)
-        }, duration)
+        const tags =  window.localStorage.getItem('tags')
+        setTags(() => tags ? JSON.parse(tags) : [])
+        const timer = tips5Min()
         update()
         return () => {
             clearTimeout(timer)
             window.removeEventListener('keydown', textKeyDown)
         }
     }, [])
+
+    const tips5Min = () => {
+        return setTimeout(() => {
+            const rate = toolTips.getRate()
+            if (rate < 0.5) {
+                toolTips.showTips(MsgTips.video)
+            } else if (rate > 0.8) {
+                toolTips.showTips(MsgTips.share)
+            }
+        }, duration)
+    }
 
     useEffect(() => {
         if (toolTips.getRate() === 1) {
@@ -411,12 +418,13 @@ export default function() {
         setObjGroup(() => jsonGroup.toJson())
         merify(0)
     }
-    const removeOne = (index: number, id: string) => {
+    const removeOne = (id: string) => {
         if (actIdRef.current === id) {
             clear()
             actIdRef.current = ''
         }
         setData(data => {
+            const index = data.findIndex(v => v.id === id)
             data.splice(index, 1)
             return [...data]
         })
@@ -487,6 +495,14 @@ export default function() {
             message.warning('请选择路径')
         }
     }
+    const clickHandleByTag = (value: string) => {
+        jsonGroup.setMark(value)
+        update()
+    }
+    const changeByTag = (tags: string[]) => {
+        window.localStorage.setItem('tags', JSON.stringify(tags))
+        setTags(() => tags)
+    }
     const renderOption = () => {
         if (nbt.option === 'nbt') {
             return (
@@ -553,8 +569,8 @@ export default function() {
             <Import visible={importVisible} onCancel={importCancel} onSubmit={importSubmit} />
             <Parse visible={parseVisible} onCancel={parseCancel} onSubmit={parseSubmit} />
             <Row>
-                <Col style={{ textAlign: 'right', lineHeight: '30px' }} span={2}>预览：</Col>
-                <Col span={20}>
+                <Col style={{ textAlign: 'right', lineHeight: '30px' }} span={3}>预览：</Col>
+                <Col span={19}>
                     <JsonView
                         className='mc-tellraw-view'
                         style={{ backgroundColor: getColor(bgColor), minHeight: 180, maxHeight: 240, overflowY: 'auto' }}
@@ -570,8 +586,8 @@ export default function() {
             <div className='mc-tellraw-cont'>
                 <div className='mc-tellraw-right-bar'>
                     <Row className='group'>
-                        <Col style={{ textAlign: 'right', lineHeight: '30px' }} span={2}>操作：</Col>
-                        <Col span={20}>
+                        <Col style={{ textAlign: 'right', lineHeight: '30px' }} span={3}>操作：</Col>
+                        <Col span={19}>
                             <Button.Group style={{ float: 'left' }}>
                                 <Button style={{ width: 65 }} type='primary' onClick={add} title='shift+enter'>新增</Button>
                                 <Button disabled={nbt.option !== 'text'} style={{ width: 65 }} title='ctrl+k' onClick={editPro}>拆分</Button>
@@ -587,8 +603,8 @@ export default function() {
                         </Col>
                     </Row>
                     <Row className='group'>
-                        <Col style={{ textAlign: 'right', lineHeight: '30px' }} span={2}>样式：</Col>
-                        <Col span={20}>
+                        <Col style={{ textAlign: 'right', lineHeight: '30px' }} span={3}>样式：</Col>
+                        <Col span={19}>
                             <Button.Group style={{ paddingRight: 10 }}>
                                 <Button style={{ width: 65 }} type={nbt.bold ? 'primary' : 'default'} onClick={changeStyle.bind(null, 'bold')} title='ctrl+b'>粗体</Button>
                                 <Button style={{ width: 65 }} type={nbt.italic ? 'primary' : 'default'} onClick={changeStyle.bind(null, 'italic')} title='ctrl+i'>斜体</Button>
@@ -602,8 +618,8 @@ export default function() {
                         </Col>
                     </Row>
                     <Row style={{ marginBottom: 10 }}>
-                        <Col span={2} style={{ textAlign: "right", paddingTop: 4 }}>点击click：</Col>
-                        <Col span={20}>
+                        <Col span={3} style={{ textAlign: "right", paddingTop: 4 }}>点击click：</Col>
+                        <Col span={19}>
                             <Input
                                 addonBefore={
                                     <Select onChange={cmdSelectChange} value={nbt.clickEvent && nbt.clickEvent.action} defaultValue='run_command' style={{ width: 100 }}>
@@ -621,8 +637,8 @@ export default function() {
                         </Col>
                     </Row>
                     <Row style={{ marginBottom: 10 }}>
-                        <Col span={2} style={{ textAlign: "right", paddingTop: 4 }}>悬浮hover：</Col>
-                        <Col span={20}>
+                        <Col span={3} style={{ textAlign: "right", paddingTop: 4 }}>悬浮hover：</Col>
+                        <Col span={19}>
                             <Input
                                 addonBefore={
                                     <Select onChange={hoverSelectChange} value={nbt.hoverEvent && nbt.hoverEvent.action} defaultValue='show_text' style={{ width: 100 }}>
@@ -649,8 +665,8 @@ export default function() {
                         </Col>
                     </Row>
                     <Row style={{ marginBottom: 10 }}>
-                        <Col span={2} style={{ textAlign: "right", paddingTop: 4 }}>可选类型：</Col>
-                        <Col span={20}>
+                        <Col span={3} style={{ textAlign: "right", paddingTop: 4 }}>可选类型：</Col>
+                        <Col span={19}>
                             <Radio.Group defaultValue='text' value={nbt.option} onChange={optChange} style={{ marginBottom: 10}}>
                                 <Radio key='text' value="text">text</Radio>
                                 <Radio key='nbt' value="nbt">nbt</Radio>
@@ -661,9 +677,10 @@ export default function() {
                         </Col>
                     </Row>
                     <Row style={{ marginBottom: 10 }}>
-                        <Col span={2} style={{ textAlign: "right", paddingTop: 4 }}>备注：</Col>
-                        <Col span={20}>
-                            <Input maxLength={20} placeholder='选填' value={objGroup.mark} onChange={markChange} />
+                        <Col span={3} style={{ textAlign: "right", paddingTop: 4 }}>备注：</Col>
+                        <Col span={19}>
+                            <Input style={{ marginBottom: 10 }} maxLength={20} placeholder='选填' value={objGroup.mark} onChange={markChange} />
+                            <EditableTagGroup tags={tags} onClose={changeByTag} onClick={clickHandleByTag} onChange={changeByTag} />
                         </Col>
                     </Row>
                 </div>

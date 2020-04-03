@@ -54,8 +54,11 @@ export default function() {
         const rawData =  window.localStorage.getItem('data');
         try {
             const data = (rawData ? JSON.parse(rawData) : []) as TellrawData[];
-            const tellraws = data.map(item => ({ ...item, data: new JsonGroup(item.data) }))
-            setData(() => tellraws)
+            if (data.length) {
+                const tellraws = data.map(item => ({ ...item, data: new JsonGroup(item.data) }))
+                setData(() => tellraws)
+                message.success(`缓存数据加载成功，共${tellraws.length}条`)
+            }
         } catch (error) {
             message.error('仓库数据加载异常')
             window.localStorage.setItem('store', '')
@@ -265,8 +268,7 @@ export default function() {
                     update();
                 } else if (k === 's') {
                     e.preventDefault()
-                    jsonGroup.actTile.change('strikethrough');
-                    update();
+                    save()
                 } else if (k === 'o') {
                     e.preventDefault()
                     jsonGroup.actTile.change('obfuscated');
@@ -318,7 +320,8 @@ export default function() {
             if (e.shiftKey) {
                 if (k === 's') {
                     e.preventDefault()
-                    save()
+                    jsonGroup.actTile.change('strikethrough');
+                    update();
                 }
             }
         }

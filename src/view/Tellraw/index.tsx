@@ -41,16 +41,35 @@ export default function() {
     useEffect(() => {
         window.addEventListener('keydown', textKeyDown);
         toolTips.showTips(MsgTips.welcome);
-        const tags =  window.localStorage.getItem('tags')
-        setTags(() => tags ? JSON.parse(tags) : [])
-        const timer = tips5Min()
-        update()
+        loadTags();
+        loadStore();
+        const timer = tips5Min();
+        update();
         return () => {
             clearTimeout(timer)
             window.removeEventListener('keydown', textKeyDown)
         }
     }, [])
-
+    const loadStore = () => {
+        const rawData =  window.localStorage.getItem('data');
+        try {
+            const data = (rawData ? JSON.parse(rawData) : []) as TellrawData[];
+            const tellraws = data.map(item => ({ ...item, data: new JsonGroup(item.data) }))
+            setData(() => tellraws)
+        } catch (error) {
+            message.error('仓库数据加载异常')
+            window.localStorage.setItem('store', '')
+        }
+    }
+    const loadTags = () => {
+        try {
+            const tags =  window.localStorage.getItem('tags')
+            setTags(() => tags ? JSON.parse(tags) : [])
+        } catch (error) {
+            message.error('标签数据加载异常')
+            window.localStorage.setItem('tags', '')
+        }
+    }
     const tips5Min = () => {
         return setTimeout(() => {
             const rate = toolTips.getRate()
@@ -192,18 +211,16 @@ export default function() {
             id: Math.random().toString(36).slice(3),
         }
         setData(data => {
-            const actId = actIdRef.current
-            if (!actId) {
-                return [...data, newData]
-            }
+            const actId = actIdRef.current;
             const index = data.findIndex(item => item.id === actId)
-            if (index > -1) {
+            if (actId && index > -1) {
                 data.splice(index, 1, { ...newData, id: actId })
                 actIdRef.current = ''
-                return [...data]
             } else {
-                return [...data, newData]
+                data.push(newData)
             }
+            window.localStorage.setItem('data', JSON.stringify(data.map(item => ({ ...item, data: item.data.export() }))));
+            return [...data]
         })
         message.success('入库成功')
         clear()
@@ -426,6 +443,7 @@ export default function() {
         setData(data => {
             const index = data.findIndex(v => v.id === id)
             data.splice(index, 1)
+            window.localStorage.setItem('data', JSON.stringify(data.map(item => ({ ...item, data: item.data.export() }))));
             return [...data]
         })
         message.success('删除成功')
@@ -441,6 +459,7 @@ export default function() {
                 actIdRef.current = ''
             }
             data.splice(data.findIndex(item => item.id === id), 1)
+            window.localStorage.setItem('data', JSON.stringify(data.map(item => ({ ...item, data: item.data.export() }))));
         })
         setData(() => [...data])
         message.success('删除成功')

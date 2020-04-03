@@ -99,8 +99,12 @@ export default function(props: IProps) {
         setSelectedRowKeys(keys => keys.filter(v => v !== id))
     }
     const handleSearch = (selectedKeys: string[], confirm: any, dataIndex: any) => {
-        confirm();
-        setSearchText(() => selectedKeys[0]);
+        if (selectedKeys.length) {
+            confirm();
+            setSearchText(() => selectedKeys[0]);
+        } else {
+            message.warning('请输入筛选条件')
+        }
     }
     const handleReset = (clearFilters: any) => {
         clearFilters();

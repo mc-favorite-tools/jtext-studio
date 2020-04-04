@@ -1,9 +1,10 @@
 import React, { useState, useRef } from "react";
-import { Table, Button, Drawer, message, notification, Input } from "antd";
+import { Table, Button, Drawer, message, notification, Input, Tooltip } from "antd";
 import { JsonGroup } from "../../lib/tellraw";
 import copy from "copy-to-clipboard";
 import ButtonGroup from "antd/lib/button/button-group";
 import { SorterResult } from "antd/lib/table";
+import JsonView from "../../unit/JsonView";
 
 export interface TellrawData {
     time: string,
@@ -153,7 +154,15 @@ export default function(props: IProps) {
             dataIndex: 'mark',
             title: '备注',
             ellipsis: true,
-            ...getColumnSearchProps('mark')
+            render: (text: string, record: TellrawData) => {
+                const data = record.data.toJson()
+                return (
+                    <Tooltip title={<JsonView readonly={true} className='mc-tellraw-view' jsonList={data.nbt} styleList={data.style} />}>
+                        {text}
+                    </Tooltip>
+                )
+            },
+            ...getColumnSearchProps('mark'),
         },
         {
             key: 'time',

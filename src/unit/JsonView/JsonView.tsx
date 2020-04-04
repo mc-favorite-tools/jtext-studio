@@ -6,13 +6,14 @@ import { RGBColor } from "react-color";
 interface IProps {
     jsonList: ITileProps[],
     styleList: ITextStyle[],
-    actIndex: number,
-    onClick: (index: number) => void,
-    value: RGBColor,
-    onChange: (value: RGBColor) => void,
-    className: string,
-    style: React.CSSProperties,
-    posChange: (toIndex: number) => void, 
+    actIndex?: number,
+    onClick?: (index: number) => void,
+    value?: RGBColor,
+    onChange?: (value: RGBColor) => void,
+    className?: string,
+    style?: React.CSSProperties,
+    posChange?: (toIndex: number) => void, 
+    readonly?: boolean,
 }
 let actIndex = -1;
 let toIndex = -1;
@@ -51,26 +52,40 @@ export default function(props: IProps) {
     }
     return (
         <div className={cls} style={props.style}>
-            <div className='json-view-color'>
-                <ColorPicker className='pane' value={props.value} onChange={props.onChange} />
-            </div>
+            {
+                props.readonly
+                    ? null
+                    : (
+                        <div className='json-view-color'>
+                            <ColorPicker className='pane' value={props.value} onChange={props.onChange} />
+                        </div>
+                    )
+            }
             <div className='json-view-pane'>
                 {
                     props.jsonList.map((item, index) => {
                         const attr = props.styleList[index];
                         const cls = 'mc-tile' + (props.actIndex === index ? ' active animate' : '')
+                        let spanProps: any = {
+                            key: index,
+                            style: {...attr},
+                            className: cls,
+                        }
+                        if (!props.readonly) {
+                            spanProps = {
+                                ...spanProps,
+                                draggable: true,
+                                onDragOver: (e: any) => e.preventDefault(),
+                                onDragStart: onDragStart.bind(null, index),
+                                onDragEnd: onDragEnd,
+                                onDragEnter: onDragEnter.bind(null, index),
+                                onClick: props.onClick.bind(null, index),
+                            }
+                        }
                         if (item.option === 'text') {
                             const list = item.text.split('\n');
                             return (
-                                <span
-                                    draggable
-                                    contentEditable={false}
-                                    onDragOver={(e) => e.preventDefault()}
-                                    onDragStart={onDragStart.bind(null, index)}
-                                    onDragEnd={onDragEnd}
-                                    onDragEnter={onDragEnter.bind(null, index)}
-                                    style={{...attr}} className={cls} key={index}
-                                    onClick={props.onClick.bind(null, index)}>
+                                <span style={{...attr}} className={cls} key={index} {...spanProps}>
                                     {
                                         list.map((el, i) => {
                                             return (
@@ -85,16 +100,7 @@ export default function(props: IProps) {
                             )
                         }
                         return (
-                            <span 
-                                draggable
-                                onDragOver={(e) => e.preventDefault()}
-                                onDragStart={onDragStart.bind(null, index)}
-                                onDragEnd={onDragEnd}
-                                onDragEnter={onDragEnter.bind(null, index)}
-                                style={{...attr}}
-                                className={cls}
-                                key={index}
-                                onClick={props.onClick.bind(null, index)}>
+                            <span {...spanProps}>
                                 {'@' + item.option}
                             </span>
                         )

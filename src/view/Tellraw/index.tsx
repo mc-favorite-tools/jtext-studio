@@ -20,6 +20,7 @@ const duration = 5 * 60 * 1000;
 const initColor = {r: 248, g: 233, b: 204, a: 1};
 const toolTips = getToolTips()
 let jsonGroup = new JsonGroup(null);
+const version = '0.4.0'
 
 jsonGroup.add()
 
@@ -43,6 +44,7 @@ export default function() {
         toolTips.showTips(MsgTips.welcome);
         loadTags();
         loadStore();
+        loadLog();
         const timer = tips5Min();
         update();
         return () => {
@@ -50,6 +52,25 @@ export default function() {
             window.removeEventListener('keydown', textKeyDown)
         }
     }, [])
+    const loadLog = () => {
+        const old =  window.localStorage.getItem('version')
+        if (old !== version) {
+            notification.info({
+                key: 'log',
+                message: `更新日志 - v${version}`,
+                description: (
+                    <ol>
+                        <li>添加标签功能，用于快速填写备注</li>
+                        <li>快捷键调整，删除线ctrl + s -> ctrl + shift + s；暂存ctrl + shift + s ->ctrl + s</li>
+                        <li>库管理进一步加强，添加了备注筛选、按时间排序和预览功能</li>
+                        <li>加入本地存储功能，标签和仓库数据会实时缓存到本地，关闭浏览器再次打开会自动加载缓存数据</li>
+                    </ol>
+                ),
+                duration: 0,
+            })
+            window.localStorage.setItem('version', version)
+        }
+    }
     const loadStore = () => {
         const rawData =  window.localStorage.getItem('data');
         try {
@@ -208,7 +229,7 @@ export default function() {
         const newData = {
             data: jsonGroup,
             time: jsonGroup.updateTime().getTime(),
-            mark: jsonGroup.getMark() ? jsonGroup.getMark() : jsonGroup.getTiles()[0].getText(),
+            mark: jsonGroup.getMark() ? jsonGroup.getMark() : jsonGroup.getTiles()[0].getText().substr(0, 20),
             id: Math.random().toString(36).slice(3),
         }
         setData(data => {
@@ -223,7 +244,7 @@ export default function() {
             window.localStorage.setItem('data', JSON.stringify(data.map(item => ({ ...item, data: item.data.export() }))));
             return [...data]
         })
-        message.success('入库成功')
+        message.success('暂存成功，点击仓库查看')
         clear()
     }
     const open = () => {
@@ -667,7 +688,7 @@ export default function() {
                     <Row style={{ marginBottom: 10 }}>
                         <Col span={3} style={{ textAlign: "right", paddingTop: 4 }}>备注：</Col>
                         <Col span={19}>
-                            <Input style={{ marginBottom: 10 }} maxLength={20} placeholder='选填' value={objGroup.mark} onChange={markChange} />
+                            <Input style={{ marginBottom: 10 }} maxLength={20} placeholder='选填，限20字' value={objGroup.mark} onChange={markChange} />
                             <EditableTagGroup tags={tags} onClose={changeByTag} onClick={clickHandleByTag} onChange={changeByTag} />
                         </Col>
                     </Row>

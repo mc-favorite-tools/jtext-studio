@@ -248,80 +248,48 @@ export default function() {
         jsonGroup.actTile.setText(e.target.value);
         update()
     }
+    const prevColor = () => {
+        const i = color.findIndex(item => item.id === jsonGroup.actTile.getColor())
+        jsonGroup.actTile.setColor(color[(i + 1) % 16].id);
+    }
+    const nextColor = () => {
+        const i = color.findIndex(item => item.id === jsonGroup.actTile.getColor())
+        jsonGroup.actTile.setColor(color[i === 0 ? 15 : i - 1].id);
+    }
+    const keyAdd = () => {
+        notification.close('addMsg')
+        add()
+    }
+    const keyMap: any = {
+        'ctrl+b': () => jsonGroup.actTile.change('bold'),//
+        'ctrl+i': () => jsonGroup.actTile.change('italic'),//
+        'ctrl+u': () => jsonGroup.actTile.change('underlined'),//
+        'ctrl+s': save,
+        'ctrl+o': () => jsonGroup.actTile.change('obfuscated'),//
+        'ctrl+arrowleft': () => jsonGroup.prev(),//
+        'ctrl+arrowright': () => jsonGroup.next(),//
+        'ctrl+arrowup': prevColor,//
+        'ctrl+arrowdown': nextColor,//
+        'ctrl+delete': remove,
+        'ctrl+g': generate.bind(null, null),
+        'ctrl+k': editPro,
+        'shift+enter': keyAdd,
+        'escape': cancel,
+        'ctrl+p': open,
+        'ctrl+shift+s': () => jsonGroup.actTile.change('strikethrough'),
+    }
     const textKeyDown = (e: any) => {
         const k = e.key.toLowerCase();
-        if (jsonGroup.actTile) {
-            if (e.ctrlKey && !e.shiftKey && !e.altKey) {
-                if (k === 'b') {
-                    e.preventDefault()
-                    jsonGroup.actTile.change('bold');
-                    update();
-                } else if (k === 'i') {
-                    e.preventDefault()
-                    jsonGroup.actTile.change('italic');
-                    update();
-                } else if (k === 'u') {
-                    e.preventDefault()
-                    jsonGroup.actTile.change('underlined');
-                    update();
-                } else if (k === 's') {
-                    e.preventDefault()
-                    save()
-                } else if (k === 'o') {
-                    e.preventDefault()
-                    jsonGroup.actTile.change('obfuscated');
-                    update();
-                } else if (k === 'arrowleft') {
-                    e.preventDefault()
-                    jsonGroup.prev();
-                    update();
-                } else if (k === 'arrowright') {
-                    e.preventDefault()
-                    jsonGroup.next();
-                    update()
-                } else if (k === 'delete') {
-                    e.preventDefault()
-                    remove();
-                } else if (k === 'arrowup') {
-                    e.preventDefault()
-                    const i = color.findIndex(item => item.id === jsonGroup.actTile.getColor())
-                    jsonGroup.actTile.setColor(color[(i + 1) % 16].id);
-                    update();
-                } else if (k === 'arrowdown') {
-                    e.preventDefault()
-                    const i = color.findIndex(item => item.id === jsonGroup.actTile.getColor())
-                    jsonGroup.actTile.setColor(color[i === 0 ? 15 : i - 1].id);
-                    update();
-                } else if (k === 'g') {
-                    e.preventDefault()
-                    generate(null)
-                } else if (k === 'k') {
-                    e.preventDefault()
-                    editPro();
-                }
-            } else if (e.shiftKey && !e.ctrlKey && !e.altKey) {
-                if (k === 'enter') {
-                    e.preventDefault()
-                    notification.close('addMsg')
-                    add()
-                }
-            } else if (k === 'escape') {
-                e.preventDefault()
-                cancel()
-            }
-        }
-        if (e.ctrlKey) {
-            if (k === 'p') {
-                e.preventDefault()
-                open()
-            }
-            if (e.shiftKey) {
-                if (k === 's') {
-                    e.preventDefault()
-                    jsonGroup.actTile.change('strikethrough');
-                    update();
-                }
-            }
+        const keyList = [];
+        if (e.ctrlKey) keyList.push('ctrl')
+        if (e.shiftKey) keyList.push('shift')
+        if (e.altKey) keyList.push('alt')
+        keyList.push(k)
+        const command = keyMap[keyList.join('+')]
+        if (command) {
+            e.preventDefault()
+            command()
+            update();
         }
     }
     const cmdSelectChange = (action: string) => {

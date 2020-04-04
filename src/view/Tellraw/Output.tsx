@@ -153,7 +153,6 @@ export default function(props: IProps) {
             key: 'mark',
             dataIndex: 'mark',
             title: '备注',
-            ellipsis: true,
             render: (text: string, record: TellrawData) => {
                 const data = record.data.toJson()
                 return (

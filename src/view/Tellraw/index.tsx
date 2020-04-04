@@ -125,9 +125,7 @@ export default function() {
         setObjGroup(() => jsonGroup.toJson());
     }
     const editPro = () => {
-        if (jsonGroup.actTile.isEmpty()) {
-            message.warn(`请选择一个非空项`)
-        } else {
+        if (!jsonGroup.actTile.isEmpty()) {
             jsonGroup.editPro()
             notification.close('splitMsg')
             update()
@@ -617,7 +615,7 @@ export default function() {
                                 <Button style={{ width: 65, color: 'red' }} onClick={clear}>清空</Button>
                                 <Button style={{ width: 65 }} onClick={cancel} title='esc'>取消</Button>
                                 <Button style={{ width: 65 }} onClick={generate.bind(null, null, true)} title='ctrl+g'>生成</Button>
-                                <Button style={{ width: 65 }} onClick={save} title='ctrl+shift+s'>暂存</Button>
+                                <Button style={{ width: 65 }} onClick={save} title='ctrl+s'>暂存</Button>
                                 <Button style={{ width: 65 }} onClick={importJson}>导入</Button>
                                 <Button style={{ width: 65 }} onClick={exportJson}>导出</Button>
                                 <Button style={{ width: 65 }} type='primary' onClick={open} title='ctrl+p'>仓库</Button>
@@ -631,7 +629,7 @@ export default function() {
                                 <Button style={{ width: 65 }} type={nbt.bold ? 'primary' : 'default'} onClick={changeStyle.bind(null, 'bold')} title='ctrl+b'>粗体</Button>
                                 <Button style={{ width: 65 }} type={nbt.italic ? 'primary' : 'default'} onClick={changeStyle.bind(null, 'italic')} title='ctrl+i'>斜体</Button>
                                 <Button style={{ width: 65 }} type={nbt.underlined ? 'primary' : 'default'} onClick={changeStyle.bind(null, 'underlined')} title='ctrl+u'>下划线</Button>
-                                <Button style={{ width: 65 }} type={nbt.strikethrough ? 'primary' : 'default'} onClick={changeStyle.bind(null, 'strikethrough')} title='ctrl+s'>删除线</Button>
+                                <Button style={{ width: 65 }} type={nbt.strikethrough ? 'primary' : 'default'} onClick={changeStyle.bind(null, 'strikethrough')} title='ctrl+shift+s'>删除线</Button>
                                 <Button style={{ width: 65 }} type={nbt.obfuscated ? 'primary' : 'default'} onClick={changeStyle.bind(null, 'obfuscated')} title='ctrl+o'>混淆</Button>
                             </Button.Group>
                             <span>

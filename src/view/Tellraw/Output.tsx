@@ -157,7 +157,7 @@ export default function(props: IProps) {
                 const data = record.data.toJson()
                 return (
                     <Tooltip title={<JsonView readonly={true} className='mc-tellraw-view' jsonList={data.nbt} styleList={data.style} />}>
-                        {text}
+                        <a style={{ marginRight: 8 }} onClick={props.editData.bind(null, record.id)}>{text}</a>
                     </Tooltip>
                 )
             },
@@ -167,7 +167,7 @@ export default function(props: IProps) {
             key: 'time',
             dataIndex: 'time',
             title: '创建时间',
-            width: 150,
+            width: 180,
             sorter: (a: TellrawData, b: TellrawData) => Date.parse(a.time) - Date.parse(b.time),
         },
         {
@@ -175,10 +175,10 @@ export default function(props: IProps) {
             dataIndex: 'action',
             fixed: 'right',
             title: '操作',
+            width: 130,
             render: (_: string, record: TellrawData, index: number) => {
                 return (
                     <div>
-                        <a style={{ marginRight: 8 }} onClick={props.editData.bind(null, record.id)}>编辑</a>
                         <a style={{ marginRight: 8 }} onClick={props.generate.bind(null, index, false)}>生成</a>
                         <a style={{ marginRight: 8 }} title='启用hover高级模式，并填充当前项' onClick={props.fillHover.bind(null, index)}>hover</a>
                         <a style={{ color: 'red' }} onClick={removeOne.bind(null, record.id)}>删除</a>

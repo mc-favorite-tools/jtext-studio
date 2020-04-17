@@ -49,7 +49,7 @@ export default function(props: IProps) {
     }
     const toSign = () => {
         if (selectedRowKeys.length > 0 && selectedRowKeys.length <= 4) {
-            const result = selectedRowItems.map((item, index) => `Text${index + 1}:"[${item.data.toString().escape().trimEnd(',')}]"`).join(',')
+            const result = selectedRowItems.map((item, index) => `Text${index + 1}:'[${item.data.toString().trimEnd(',')}]'`).join(',')
             if (result.includes('\\n')) {
                 notification.warning({
                     key: 'replace',
@@ -68,7 +68,7 @@ export default function(props: IProps) {
     }
     const toBook = () => {
         if (selectedRowKeys.length) {
-            const result = selectedRowItems.map(item => `"[${item.data.toString().escape().trimEnd(',')}]"`).join(',')
+            const result = selectedRowItems.map(item => `'[${item.data.toString().trimEnd(',')}]'`).join(',')
             copy(`/give @p written_book{pages:[${result}],title:"",author:"made by JText Studio"}`)
             message.success('已复制到剪切板')
             return;

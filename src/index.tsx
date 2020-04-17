@@ -6,12 +6,14 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import * as serviceWorker from './serviceWorker';
 import Tellraw from './view/Tellraw';
+import { Typography } from 'antd';
 
 ReactDOM.render(
     <div>
         <h1>
             JText Studio
             <span>匠心打造，追求极致</span>
+            <Typography.Text style={{ fontSize: 14 }} type="warning">兼容v1.14+</Typography.Text>
             <div className='right'>
                 <a href="https://gitee.com/hans000/JText-Studio" target='_blank'>使用文档</a>
                 <a href="https://gitee.com/hans000/JText-Studio/issues" target='_blank'> 问题反馈</a>

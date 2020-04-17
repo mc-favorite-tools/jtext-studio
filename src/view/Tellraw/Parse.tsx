@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Modal, Input, TreeSelect, message, Row, Col } from "antd";
-import Nbt from "../../lib/parse";
+// @ts-ignore
+import parse from "mojangson-parser";
 import Search from "antd/lib/input/Search";
 import { nbtType } from "../../lib/tellraw/JsonTile";
 
@@ -50,7 +51,7 @@ export default function(props: IProps) {
                     return (
                         <TreeSelect.TreeNode 
                             path={newPath} 
-                            title={`${key}: ${value}`}
+                            title={`${key}: ${value.length > 20 ? `${value.slice(0, 10)}..${value.slice(-10)}` : value}`}
                             key={newPath.toString()}
                             value={newPath.toString()} />
                     )
@@ -82,7 +83,7 @@ export default function(props: IProps) {
                         typeRef.current = 'entity'
                     }
                 }
-                const data = Nbt.parse(value.slice(index))
+                const data = parse(value.slice(index))
                 setData(() => data)
                 setSelect(() => '')
                 message.success('解析成功，请选择需要的路径')

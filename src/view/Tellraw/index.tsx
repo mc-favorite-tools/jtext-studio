@@ -20,7 +20,7 @@ const duration = 5 * 60 * 1000;
 const initColor = {r: 248, g: 233, b: 204, a: 1};
 const toolTips = getToolTips()
 let jsonGroup = new JsonGroup(null);
-const version = '0.4.0'
+const version = '0.5.0'
 
 jsonGroup.add()
 
@@ -37,7 +37,7 @@ export default function() {
     const nbtRef = useRef<Input>()
     const selectorRef = useRef<Input>()
     const scoreRef = useRef<Input>()
-    const [tags, setTags] = useState<string[]>(['tellraw', 'sign', 'book', 'title'])
+    const [tags, setTags] = useState<string[]>([])
 
     useEffect(() => {
         window.addEventListener('keydown', textKeyDown);
@@ -60,10 +60,9 @@ export default function() {
                 message: `更新日志 - v${version}`,
                 description: (
                     <ol>
-                        <li>添加标签功能，用于快速填写备注</li>
-                        <li>快捷键调整，删除线ctrl + s -> ctrl + shift + s；暂存ctrl + shift + s ->ctrl + s</li>
-                        <li>库管理进一步加强，添加了备注筛选、按时间排序和预览功能</li>
-                        <li>加入本地存储功能，标签和仓库数据会实时缓存到本地，关闭浏览器再次打开会自动加载缓存数据</li>
+                        <li>牌子和成书的生成使用单引号</li>
+                        <li>nbt解析可以解析单引号的文本</li>
+                        <li>游戏版本1.14+</li>
                     </ol>
                 ),
                 duration: 0,
@@ -88,7 +87,7 @@ export default function() {
     const loadTags = () => {
         try {
             const tags =  window.localStorage.getItem('tags')
-            setTags(() => tags ? JSON.parse(tags) : [])
+            setTags(() => tags ? JSON.parse(tags) : ['tellraw', 'sign', 'book', 'title'])
         } catch (error) {
             message.error('标签数据加载异常')
             window.localStorage.setItem('tags', '')

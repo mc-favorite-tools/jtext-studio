@@ -20,7 +20,7 @@ const duration = 5 * 60 * 1000;
 const initColor = {r: 248, g: 233, b: 204, a: 1};
 const toolTips = getToolTips()
 let jsonGroup = new JsonGroup(null);
-const version = '0.5.0'
+const version = '0.6.0'
 
 jsonGroup.add()
 
@@ -60,9 +60,8 @@ export default function() {
                 message: `更新日志 - v${version}`,
                 description: (
                     <ol>
-                        <li>牌子和成书的生成使用单引号</li>
-                        <li>nbt解析可以解析单引号的文本</li>
-                        <li>游戏版本1.14+</li>
+                        <li>nbt解析增强，可以解析1.16的TAG_(type)_Array文本</li>
+                        <li>新作OOC生成器（OOOC）上线</li>
                     </ol>
                 ),
                 duration: 0,

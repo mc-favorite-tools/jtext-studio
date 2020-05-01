@@ -51,7 +51,7 @@ export default function(props: IProps) {
                     return (
                         <TreeSelect.TreeNode 
                             path={newPath} 
-                            title={`${key}: ${value.length > 20 ? `${value.slice(0, 10)}..${value.slice(-10)}` : value}`}
+                            title={`${key}: ${value.length > 30 ? `${value.slice(0, 30)}...` : value}`}
                             key={newPath.toString()}
                             value={newPath.toString()} />
                     )

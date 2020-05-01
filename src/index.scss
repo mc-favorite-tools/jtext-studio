@@ -32,6 +32,9 @@ h1 {
     a {
       color: white;
       padding-right: 16px;
+      &:hover {
+        color: #ffd867;
+      }
     }
   }
 }

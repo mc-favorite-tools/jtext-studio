@@ -23,7 +23,7 @@ export type nbtType = 'block' | 'entity' | 'storage'
 export default class JsonTile {
     //#region fields
     private text = '';
-    private color = 'white';
+    private color = '#ffffff';
     private selector = '';
     private nbt = '';
     private block: string = '';
@@ -211,8 +211,8 @@ export default class JsonTile {
         const obj: ITextStyle = {}
         const arr = [];
         if (this.color) {
-            const fc = Color.find(e => e.id === this.color).fc
-            obj['color'] = '#' + fc
+            const c = Color.find(e => e.id === this.color)
+            obj['color'] = c ? '#' + c.fc : this.color
         }
         if (this.bold) {
             obj['fontWeight'] = 700
@@ -257,7 +257,7 @@ export default class JsonTile {
         } else {
             throw new TileError('option仅能是text | nbt | score | selector')
         }
-        if (this.color !== 'white') {
+        if (this.color !== '#ffffff') {
             obj.color = this.color
         }
         return {
@@ -298,7 +298,13 @@ export default class JsonTile {
             if (typeof value === 'object') {
                 s += value.toString()
             } else if (value) {
-                if (typeof value === 'boolean') {
+                if (key === 'color') {
+                    const item = Color.find(v => v.fc === value)
+                    if (item) {
+                        value = item.id
+                    }
+                    s += `"${key}":"${value}",`
+                } else if (typeof value === 'boolean') {
                     s += `"${key}":${value},`
                 } else {
                     s += `"${key}":"${value}",`

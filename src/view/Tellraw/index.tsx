@@ -10,17 +10,19 @@ import JsonView from "../../unit/JsonView";
 import Output, { TellrawData } from "./Output";
 import Import from "./Import";
 import TileError from "../../util/TileError";
-import { SelectColor } from "../../unit/SelectColor";
 import TextArea from "antd/lib/input/TextArea";
 import Parse from "./Parse";
 import getToolTips, { MsgTips } from "../../tool/toolTips";
 import EditableTagGroup from "./EditableTag";
+import ColorPicker from "../../unit/ColorPicker";
+import { toRGBColor, RGB2HEX } from "../../util";
+import { colors } from "../../const";
 
 const duration = 5 * 60 * 1000;
 const initColor = {r: 248, g: 233, b: 204, a: 1};
 const toolTips = getToolTips()
 let jsonGroup = new JsonGroup(null);
-const version = '0.6.0'
+const version = '0.7.0'
 
 jsonGroup.add()
 
@@ -60,8 +62,7 @@ export default function() {
                 message: `更新日志 - v${version}`,
                 description: (
                     <ol>
-                        <li>nbt解析增强，可以解析1.16的TAG_(type)_Array文本</li>
-                        <li>新作OOC生成器（OOOC）上线</li>
+                        <li>支持1.16十六进制颜色</li>
                     </ol>
                 ),
                 duration: 0,
@@ -248,8 +249,8 @@ export default function() {
     const open = () => {
         setVisible(() => true)
     }
-    const colorChange = (color: string) => {
-        jsonGroup.actTile.setColor(color)
+    const colorChange = (color: RGBColor) => {
+        jsonGroup.actTile.setColor(RGB2HEX(color))
         update()
     }
     const bgColorChange = (color: RGBColor) => {
@@ -268,12 +269,14 @@ export default function() {
         update()
     }
     const prevColor = () => {
-        const i = color.findIndex(item => item.id === jsonGroup.actTile.getColor())
-        jsonGroup.actTile.setColor(color[(i + 1) % 16].id);
+        const i = color.findIndex(item => item.fc === jsonGroup.actTile.getColor())
+        jsonGroup.actTile.setColor(color[(i + 1) % 16].fc);
+        update()
     }
     const nextColor = () => {
-        const i = color.findIndex(item => item.id === jsonGroup.actTile.getColor())
-        jsonGroup.actTile.setColor(color[i === 0 ? 15 : i - 1].id);
+        const i = color.findIndex(item => item.fc === jsonGroup.actTile.getColor())
+        jsonGroup.actTile.setColor(color[i < 0 ? 15 : i - 1].fc);
+        update()
     }
     const keyAdd = () => {
         notification.close('addMsg')
@@ -620,7 +623,7 @@ export default function() {
                                 <Button style={{ width: 65 }} type={nbt.obfuscated ? 'primary' : 'default'} onClick={changeStyle.bind(null, 'obfuscated')} title='ctrl+o'>混淆</Button>
                             </Button.Group>
                             <span>
-                                字体颜色：<SelectColor value={nbt.color}  onChange={colorChange} />
+                                字体颜色：<ColorPicker presetColors={colors} style={{ verticalAlign: 'middle' }} value={toRGBColor(nbt.color)}  onChange={colorChange} />
                             </span>
                         </Col>
                     </Row>

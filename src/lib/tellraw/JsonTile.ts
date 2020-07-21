@@ -184,13 +184,14 @@ export default class JsonTile {
     }
     public setColor(color: string, isValid = false) {
         if (isValid && color) {
-            if (Color.findIndex(item => item.id === color) > -1) {
+            if (Color.findIndex(item => item.id === color) > -1 ||
+                /^#([A-F\d]{6}|[A-F\d]{3})$/i.test(color)) {
                 this.color = color
             } else {
-                throw new TileError('color字段的值有误')
+                throw new TileError('color属性的值有误')
             }
         } else {
-            this.color = color ? color : 'white'
+            this.color = color ? color : '#ffffff'
         }
     }
     public getClickEvent() {

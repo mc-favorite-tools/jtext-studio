@@ -22,7 +22,7 @@ const duration = 5 * 60 * 1000;
 const initColor = {r: 248, g: 233, b: 204, a: 1};
 const toolTips = getToolTips()
 let jsonGroup = new JsonGroup(null);
-const version = '0.7.0'
+const version = '0.7.1'
 
 jsonGroup.add()
 
@@ -63,6 +63,7 @@ export default function() {
                 description: (
                     <ol>
                         <li>支持1.16十六进制颜色</li>
+                        <li>修复一些bug</li>
                     </ol>
                 ),
                 duration: 0,
@@ -275,7 +276,7 @@ export default function() {
     }
     const nextColor = () => {
         const i = color.findIndex(item => item.fc === jsonGroup.actTile.getColor())
-        jsonGroup.actTile.setColor(color[i < 0 ? 15 : i - 1].fc);
+        jsonGroup.actTile.setColor(color[i <= 0 ? 15 : i - 1].fc);
         update()
     }
     const keyAdd = () => {

@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { Table, Button, Drawer, message, notification, Input, Tooltip } from "antd";
+import { Table, Button, Drawer, message, notification, Input, Tooltip, Select } from "antd";
 import { JsonGroup } from "../../lib/tellraw";
 import copy from "copy-to-clipboard";
 import ButtonGroup from "antd/lib/button/button-group";
@@ -24,28 +24,40 @@ interface IProps {
     generate: (index: number, valid: boolean) => void,
     fillHover: (index: number) => void,
 }
+
+const defaultData: { [name: string]: string } = {
+    tellraw: '/tellraw @p ["",%s]',
+    sign: '/give @p oak_sign{BlockEntityTag:{%s}}',
+    book: '/give @p written_book{pages:[%s],title:"",author:"made by JText Studio"}',
+    title: '/title @p title ["",%s]',
+}
+
+const defalutTplType = 'tellraw'
+
 export default function(props: IProps) {
     const [selectedRowKeys, setSelectedRowKeys] = useState<string[]>([])
     const [selectedRowItems, setSelectedRowItems] = useState<TellrawData[]>([])
     const [, setSorter] = useState<SorterResult<TellrawData>>()
     const [searchText, setSearchText] = useState('')
+    const [tplType, setTplType] = useState(defalutTplType)
+    const [tpl, setTpl] = useState(defaultData.tellraw)
     const searchInputRef = useRef<Input>()
 
+    const replace = (value: string) => {
+        copy(value.replace(/\\\\n/g, ''))
+        notification.close('replace')
+    }
     const toTellraw = () => {
         if (selectedRowKeys.length) {
             const result = selectedRowItems.reduce((s, e) => {
                 s += e.data.toString() + ','
                 return s
             }, '').trimEnd(',')
-            copy(`/tellraw @p ["",${result}]`)
+            copy(tpl.replace('%s', result))
             message.success('已复制到剪切板')
             return;
         }
         message.warning('请至少选择一项')
-    }
-    const replace = (value: string) => {
-        copy(value.replace(/\\\\n/g, ''))
-        notification.close('replace')
     }
     const toSign = () => {
         if (selectedRowKeys.length > 0 && selectedRowKeys.length <= 4) {
@@ -60,7 +72,7 @@ export default function(props: IProps) {
                     ),
                 })
             }
-            copy(`/give @p oak_sign{BlockEntityTag:{${result}}}`)
+            copy(tpl.replace('%s', result))
             message.success('已复制到剪切板')
             return;
         }
@@ -69,7 +81,7 @@ export default function(props: IProps) {
     const toBook = () => {
         if (selectedRowKeys.length) {
             const result = selectedRowItems.map(item => `'[${item.data.toString().trimEnd(',')}]'`).join(',')
-            copy(`/give @p written_book{pages:[${result}],title:"",author:"made by JText Studio"}`)
+            copy(tpl.replace('%s', result))
             message.success('已复制到剪切板')
             return;
         }
@@ -81,11 +93,22 @@ export default function(props: IProps) {
                 s += e.data.toString() + ','
                 return s
             }, '').trimEnd(',')
-            copy(`/title @p title ["",${result}]`)
+            copy(tpl.replace('%s', result))
             message.success('已复制到剪切板')
             return;
         }
         message.warning('请至少选择一项')
+    }
+    const create = () => {
+        if (tplType === 'tellraw') {
+            toTellraw()
+        } else if (tplType === 'sign') {
+            toSign()
+        } else if (tplType === 'book') {
+            toBook()
+        } else if (tplType === 'title') {
+            toTitle()
+        }
     }
     const onChange = (select: any, items: any) => {
         setSelectedRowKeys(() => select)
@@ -106,6 +129,16 @@ export default function(props: IProps) {
         } else {
             message.warning('请输入筛选条件')
         }
+    }
+    const tplTypeChange = (value: string) => {
+        setTplType(() => value)
+        setTpl(() => defaultData[value])
+    }
+    const tplTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        e.persist()
+        const value = e.target.value
+        setTpl(() => value)
+        defaultData[tplType] = value
     }
     const handleReset = (clearFilters: any) => {
         clearFilters();
@@ -179,9 +212,9 @@ export default function(props: IProps) {
             render: (_: string, record: TellrawData, index: number) => {
                 return (
                     <div>
-                        <a style={{ marginRight: 8 }} onClick={props.generate.bind(null, index, false)}>生成</a>
+                        <a style={{ marginRight: 8 }} onClick={props.generate.bind(null, index, false)} title='仅生成nbt'>生成</a>
                         <a style={{ marginRight: 8 }} title='启用hover高级模式，并填充当前项' onClick={props.fillHover.bind(null, index)}>hover</a>
-                        <a style={{ color: 'red' }} onClick={removeOne.bind(null, record.id)}>删除</a>
+                        <a style={{ color: 'red' }} onClick={removeOne.bind(null, record.id)} title='删除当前项'>删除</a>
                     </div>
                 )
             }
@@ -199,22 +232,32 @@ export default function(props: IProps) {
             title={
                 <div>
                     <div style={{ float: 'right', marginRight: 50 }}>
-                        <ButtonGroup>
-                            <Button onClick={toTellraw} type='primary'>tellraw</Button>
-                            <Button onClick={toSign}>sign</Button>
-                            <Button onClick={toBook}>book</Button>
-                            <Button onClick={toTitle}>title</Button>
-                        </ButtonGroup>
                         <ButtonGroup style={{ marginLeft: 10 }}>
-                            <Button disabled={!!searchText.length} onClick={props.move.bind(null, selectedRowItems)} title='将选择项向上移动'>移动</Button>
-                            <Button disabled={!!searchText.length} onClick={props.pack.bind(null, selectedRowKeys, selectedRowItems)}>整理</Button>
-                            <Button style={{ color: 'red' }} onClick={remove}>删除</Button>
+                            <Button disabled={!!searchText.length} onClick={props.move.bind(null, selectedRowItems)} title='将表格中的选择项向上移动一行'>移动</Button>
+                            <Button disabled={!!searchText.length} onClick={props.pack.bind(null, selectedRowKeys, selectedRowItems)} title='将选择的项整理到一起'>整理</Button>
+                            <Button style={{ color: 'red' }} onClick={remove} title='批量删除表格中勾选的项'>删除</Button>
                         </ButtonGroup>
                     </div>
                     <h3>仓库</h3>
                 </div>
             }
             bodyStyle={{ paddingBottom: 80 }}>
+            <div style={{ marginBottom: 16 }}>
+                <Input
+                    addonBefore={
+                        <Select defaultValue={defalutTplType} onChange={tplTypeChange} style={{ width: 100 }}>
+                            {
+                                Object.keys(defaultData).map((key) => <Select.Option key={key} value={key}>{key}</Select.Option>)
+                            }
+                        </Select>
+                    }
+                    addonAfter={
+                        <a onClick={create}>生成</a>
+                    }
+                    value={tpl}
+                    onChange={tplTextChange}
+                    ></Input>
+            </div>
             <Table
                 columns={columns}
                 size='small'

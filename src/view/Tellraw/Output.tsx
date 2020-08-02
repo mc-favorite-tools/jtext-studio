@@ -19,6 +19,7 @@ interface IProps {
     editData: (id: string) => void,
     removeOne: (id: string) => void,
     pack: (keys: string[], items: TellrawData[]) => void,
+    merge: (keys: string[], items: TellrawData[]) => void,
     remove: (keys: string[]) => void,
     move: (items: TellrawData[]) => void,
     generate: (index: number, valid: boolean) => void,
@@ -235,6 +236,7 @@ export default function(props: IProps) {
                         <ButtonGroup style={{ marginLeft: 10 }}>
                             <Button disabled={!!searchText.length} onClick={props.move.bind(null, selectedRowItems)} title='将表格中的选择项向上移动一行'>移动</Button>
                             <Button disabled={!!searchText.length} onClick={props.pack.bind(null, selectedRowKeys, selectedRowItems)} title='将选择的项整理到一起'>整理</Button>
+                            <Button disabled={!!searchText.length} onClick={props.merge.bind(null, selectedRowKeys, selectedRowItems)} title='将选择的项合并到一起'>合并</Button>
                             <Button style={{ color: 'red' }} onClick={remove} title='批量删除表格中勾选的项'>删除</Button>
                         </ButtonGroup>
                     </div>

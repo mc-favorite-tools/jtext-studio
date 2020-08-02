@@ -468,6 +468,26 @@ export default function() {
         data.splice(firstIndex, 0, ...items)
         setData(() => [...data])
     }
+    const merge = (id: string[], items: TellrawData[]) => {
+        if (id.length < 1) {
+            message.warning('请至少选择两项')
+            return;
+        }
+        const firstIndex = data.findIndex(item => item.id === items[0].id)
+        const firstOne = items[firstIndex]
+        id.forEach(id => {
+            const index = data.findIndex(item => item.id === id)
+            const removeOne = data.splice(index, 1)
+            if (id !== firstOne.id) {
+                firstOne.data.add(removeOne[0].data.getTiles())
+            }
+        })
+        data.splice(firstIndex, 0, firstOne)
+        setData(() => {
+            window.localStorage.setItem('data', JSON.stringify(data.map(item => ({ ...item, data: item.data.export() }))));
+            return [...data]
+        })
+    }
     const move = (items: TellrawData[]) => {
         if (!items.length) {
             message.warning('请至少选择一项')
@@ -703,6 +723,7 @@ export default function() {
                 removeOne={removeOne}
                 remove={removeData}
                 pack={pack}
+                merge={merge}
                 move={move}
                 visible={visible}
                 data={data}

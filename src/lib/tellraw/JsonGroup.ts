@@ -120,16 +120,24 @@ export default class JsonGroup {
         }
         this.actTile = this.tiles[this.actIndex]
     }
-    public add() {
-        let tile = new JsonTile(null)
-        const last = this.tiles[this.tiles.length - 1]
-        if (this.tiles.length && last.isEmpty()) {
-            tile = last
+    public add(tiles?: JsonTile[] | JsonTile) {
+        if (tiles) {
+            if (Array.isArray(tiles)) {
+                this.tiles.push(...tiles)
+            } else {
+                this.tiles.push(tiles)
+            }
         } else {
-            this.tiles.push(tile)
+            let tile = new JsonTile(null)
+            const last = this.tiles[this.tiles.length - 1]
+            if (this.tiles.length && last.isEmpty()) {
+                tile = last
+            } else {
+                this.tiles.push(tile)
+            }
+            this.actTile = tile
+            this.actIndex = this.tiles.length - 1
         }
-        this.actTile = tile
-        this.actIndex = this.tiles.length - 1
     }
     public hasEmpty() {
         const len = this.getTiles().length

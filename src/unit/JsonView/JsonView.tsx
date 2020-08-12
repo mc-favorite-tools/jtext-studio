@@ -44,8 +44,8 @@ export default function(props: IProps) {
         }
         actIndex = -1;
         if (targetNode) {
-        e.target.classList.add('animate');
-        targetNode.classList.remove('drag-enter');
+            e.target.classList.add('animate');
+            targetNode.classList.remove('drag-enter');
             targetNode = null;
         }
         e.target.style.opacity = "1";

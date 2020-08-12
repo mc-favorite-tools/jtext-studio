@@ -23,7 +23,7 @@ export default class ClickEvent extends EventBase {
             if (this.action === ClickActions.run_command && !this.value.startsWith('/')) {
                 this.value = '/' + this.value
             }
-            return `"clickEvent":{\"action\":\"${this.action}\",\"value\":\"${this.value}\"},`
+            return `"clickEvent":{\"action\":\"${this.action}\",\"value\":\"${this.value.escape()}\"},`
         }
         return ''
     }

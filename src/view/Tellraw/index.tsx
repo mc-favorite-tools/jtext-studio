@@ -22,7 +22,7 @@ const duration = 5 * 60 * 1000;
 const initColor = {r: 248, g: 233, b: 204, a: 1};
 const toolTips = getToolTips()
 let jsonGroup = new JsonGroup(null);
-const version = '0.7.1'
+const version = '0.8.2'
 
 jsonGroup.add()
 
@@ -62,8 +62,7 @@ export default function() {
                 message: `更新日志 - v${version}`,
                 description: (
                     <ol>
-                        <li>支持1.16十六进制颜色</li>
-                        <li>修复一些bug</li>
+                        <li>修复转义字符问题</li>
                     </ol>
                 ),
                 duration: 0,

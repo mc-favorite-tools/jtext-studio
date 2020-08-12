@@ -74,7 +74,7 @@ export default class HoverEvent extends EventBase {
             const action = `\"action\":\"${this.action}\",`;
             let value = '';
             if (this.action === HoverActions.show_text) {
-                value = `\"value\":${this.action === HoverActions.show_text && +this.pro ? this.value : '\"' + this.value + '\"'}`
+                value = `\"value\":${this.action === HoverActions.show_text && +this.pro ? this.value.escape() : '\"' + this.value.escape() + '\"'}`
             } else {
                 value = `\"value\":\"${this.value.escape()}\"`
             }

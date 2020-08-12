@@ -314,7 +314,7 @@ export default class JsonTile {
             return s
         }, '').trimEnd(',')
         if (option === 'text') {
-            return text ? `{"text":"${text.replace(/\n/g, '\\n')}",${baseStr}}` : ''
+            return text ? `{"text":"${text.replace(/\n/g, '\\n').escape()}",${baseStr}}` : ''
         } else if (option === 'nbt') {
             let str = ''
             if (nbt) {

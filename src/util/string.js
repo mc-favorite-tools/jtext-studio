@@ -1,3 +1,4 @@
+/* eslint-disable no-extend-native */
 String.prototype.escape = function() {
     return this.replace(/\\/g, '\\\\').replace(/"/g, '\\"')
 }

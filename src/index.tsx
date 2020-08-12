@@ -18,7 +18,7 @@ ReactDOM.render(
                 <a href="https://hans000.gitee.io/obsolete-ooc/" target='_blank'>OOOC</a>
                 <a href="https://gitee.com/hans000/JText-Studio" target='_blank'>使用文档</a>
                 <a href="https://gitee.com/hans000/JText-Studio/issues" target='_blank'> 问题反馈</a>
-                <a href="https://gitee.com/hans000/JText-Studio/blob/master/log.md" target='_blank'> 更新日志</a>
+                <a href="https://gitee.com/hans000/JText-Studio/blob/master/CHANGELOG.md" target='_blank'> 更新日志</a>
             </div>
         </h1>
         <div className="cont">

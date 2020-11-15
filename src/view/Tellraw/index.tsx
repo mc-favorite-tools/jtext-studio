@@ -17,12 +17,13 @@ import EditableTagGroup from "./EditableTag";
 import ColorPicker from "../../unit/ColorPicker";
 import { toRGBColor, RGB2HEX } from "../../util";
 import { colors } from "../../const";
+import LZString from 'lz-string'
 
 const duration = 5 * 60 * 1000;
 const initColor = {r: 248, g: 233, b: 204, a: 1};
 const toolTips = getToolTips()
 let jsonGroup = new JsonGroup(null);
-const version = '0.8.2'
+const version = '0.9.1'
 
 jsonGroup.add()
 
@@ -47,6 +48,7 @@ export default function() {
         loadTags();
         loadStore();
         loadLog();
+        loadUrl()
         const timer = tips5Min();
         update();
         return () => {
@@ -54,6 +56,18 @@ export default function() {
             window.removeEventListener('keydown', textKeyDown)
         }
     }, [])
+    const loadUrl = () => {
+        const text = LZString.decompressFromBase64(window.location.hash.slice(1))
+        importSubmit(text)
+    }
+    const updateUrl = () => {
+        const compress = LZString.compressToBase64(JSON.stringify(jsonGroup.export()))
+        window.location.hash = compress
+    }
+    const share = () => {
+        message.success('已复制到剪贴板')
+        copy(window.location.href)
+    }
     const loadLog = () => {
         const old =  window.localStorage.getItem('version')
         if (old !== version) {
@@ -62,7 +76,7 @@ export default function() {
                 message: `更新日志 - v${version}`,
                 description: (
                     <ol>
-                        <li>修复转义字符问题</li>
+                        <li>添加分享功能，分享链接即可加载当前工程</li>
                     </ol>
                 ),
                 duration: 0,
@@ -142,6 +156,7 @@ export default function() {
             }
             return jsonGroup.actTile.toJson()
         })
+        updateUrl()
         setObjGroup(() => jsonGroup.toJson());
     }
     const editPro = () => {
@@ -628,6 +643,7 @@ export default function() {
                                 <Button style={{ width: 65 }} onClick={save} title='ctrl+s'>暂存</Button>
                                 <Button style={{ width: 65 }} onClick={importJson}>导入</Button>
                                 <Button style={{ width: 65 }} onClick={exportJson}>导出</Button>
+                                <Button style={{ width: 65 }} onClick={share}>分享</Button>
                                 <Button style={{ width: 65 }} type='primary' onClick={open} title='ctrl+p'>仓库</Button>
                             </Button.Group>
                         </Col>

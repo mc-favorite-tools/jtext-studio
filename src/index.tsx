@@ -10,6 +10,7 @@ import { Typography } from 'antd';
 
 ReactDOM.render(
     <div>
+        <header style={{ textAlign: 'center', backgroundColor: 'red' }}>注意：软件已归档，可能存在严重bug，不再维护，请使用新的软件<a href="https://www.mcbbs.net/thread-1361537-1-1.html">JText Editor(点击访问)</a>，拥有更好的体验</header>
         <h1>
             JText Studio
             <span>匠心打造，追求极致</span>

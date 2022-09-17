@@ -23,7 +23,7 @@ const duration = 5 * 60 * 1000;
 const initColor = {r: 248, g: 233, b: 204, a: 1};
 const toolTips = getToolTips()
 let jsonGroup = new JsonGroup(null);
-const version = '0.9.1'
+const version = '0.9.2'
 
 jsonGroup.add()
 
@@ -71,12 +71,12 @@ export default function() {
     const loadLog = () => {
         const old =  window.localStorage.getItem('version')
         if (old !== version) {
-            notification.info({
+            notification.warning({
                 key: 'log',
                 message: `更新日志 - v${version}`,
                 description: (
                     <ol>
-                        <li>添加分享功能，分享链接即可加载当前工程</li>
+                        <li>重要提醒：该软件不再维护，请使用新的生成器<a href="https://www.mcbbs.net/thread-1361537-1-1.html">JText Editor</a></li>
                     </ol>
                 ),
                 duration: 0,

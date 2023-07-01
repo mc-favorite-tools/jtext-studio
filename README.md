@@ -1,4 +1,4 @@
 # JText Studio
 
 ## License
-[AGPL](./LICENSE)
+[AGPL-3.0](./LICENSE)

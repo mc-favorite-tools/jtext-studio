@@ -3,6 +3,6 @@
  * Copyright (c) 2023 hans000
  */
 import ColorPicker from './ColorPicker';
-import './index.scss'
+import './index.less'
 
 export default ColorPicker

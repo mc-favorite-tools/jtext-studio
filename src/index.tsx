@@ -3,7 +3,7 @@
  * Copyright (c) 2023 hans000
  */
 import 'antd/dist/antd.css';
-import './index.scss';
+import './index.less';
 import './util/string';
 import './util/date'
 import React from 'react';
@@ -19,12 +19,6 @@ ReactDOM.render(
             JText Studio
             <span>匠心打造，追求极致</span>
             <Typography.Text style={{ fontSize: 14 }} type="warning">兼容v1.14+</Typography.Text>
-            <div className='right'>
-                <a href="https://hans000.gitee.io/obsolete-ooc/" target='_blank'>OOOC</a>
-                <a href="https://gitee.com/hans000/JText-Studio" target='_blank'>使用文档</a>
-                <a href="https://gitee.com/hans000/JText-Studio/issues" target='_blank'> 问题反馈</a>
-                <a href="https://gitee.com/hans000/JText-Studio/blob/master/CHANGELOG.md" target='_blank'> 更新日志</a>
-            </div>
         </h1>
         <div className="cont">
             <Tellraw />

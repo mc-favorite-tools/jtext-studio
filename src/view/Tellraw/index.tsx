@@ -3,9 +3,9 @@
  * Copyright (c) 2023 hans000
  */
 import React, { useState, useEffect, useRef } from "react";
-import { Button, Select, Input, Row, Col, message, Radio, Tooltip, notification } from "antd";
+import { Button, Select, Input, Row, Col, message, Radio, Tooltip, notification, InputRef } from "antd";
 import { JsonGroup } from "../../lib/tellraw";
-import './index.scss'
+import './index.less'
 import { ITileProps, textType, nbtType } from "../../lib/tellraw/JsonTile";
 import color from "../../lib/tellraw/color";
 import { RGBColor } from "react-color";
@@ -14,7 +14,7 @@ import JsonView from "../../unit/JsonView";
 import Output, { TellrawData } from "./Output";
 import Import from "./Import";
 import TileError from "../../util/TileError";
-import TextArea from "antd/lib/input/TextArea";
+import TextArea, { TextAreaRef } from "antd/lib/input/TextArea";
 import Parse from "./Parse";
 import getToolTips, { MsgTips } from "../../tool/toolTips";
 import EditableTagGroup from "./EditableTag";
@@ -40,10 +40,10 @@ export default function() {
     const [parseVisible, setParseVisible] = useState(false);
     const [data, setData] = useState<TellrawData[]>([]);
     const actIdRef = useRef<string>('')
-    const textRef = useRef<TextArea>()
-    const nbtRef = useRef<Input>()
-    const selectorRef = useRef<Input>()
-    const scoreRef = useRef<Input>()
+    const textRef = useRef<TextAreaRef>()
+    const nbtRef = useRef<InputRef>()
+    const selectorRef = useRef<InputRef>()
+    const scoreRef = useRef<InputRef>()
     const [tags, setTags] = useState<string[]>([])
 
     useEffect(() => {

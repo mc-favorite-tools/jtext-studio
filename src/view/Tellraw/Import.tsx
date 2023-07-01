@@ -3,7 +3,7 @@
  * Copyright (c) 2023 hans000
  */
 import React, { useState, useRef, useEffect } from "react";
-import { Modal, Input } from "antd";
+import { Modal, Input, InputRef } from "antd";
 
 interface IProps {
     visible: boolean,
@@ -12,7 +12,7 @@ interface IProps {
 }
 export default function(props: IProps) {
     const [value, setValue] = useState('')
-    const inputRef = useRef<Input>()
+    const inputRef = useRef<InputRef>(null)
     const onChange = (e: any) => {
         e.persist();
         setValue(() => e.target.value)
@@ -34,7 +34,7 @@ export default function(props: IProps) {
     }, [props.visible])
     return (
         <Modal
-            visible={props.visible}
+            open={props.visible}
             onCancel={handleCancel}
             onOk={handleSuibmit}
             okText='解析'

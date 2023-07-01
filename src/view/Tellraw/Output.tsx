@@ -7,8 +7,8 @@ import { Table, Button, Drawer, message, notification, Input, Tooltip, Select } 
 import { JsonGroup } from "../../lib/tellraw";
 import copy from "copy-to-clipboard";
 import ButtonGroup from "antd/lib/button/button-group";
-import { SorterResult } from "antd/lib/table";
 import JsonView from "../../unit/JsonView";
+import { SorterResult } from "antd/lib/table/interface";
 
 export interface TellrawData {
     time: string,
@@ -46,7 +46,7 @@ export default function(props: IProps) {
     const [searchText, setSearchText] = useState('')
     const [tplType, setTplType] = useState(defalutTplType)
     const [tpl, setTpl] = useState(defaultData.tellraw)
-    const searchInputRef = useRef<Input>()
+    const searchInputRef = useRef<any>()
 
     const replace = (value: string) => {
         copy(value.replace(/\\\\n/g, ''))
@@ -178,9 +178,6 @@ export default function(props: IProps) {
             }
         },
     })
-    const changeHandle = (_: any, __: any, sorter: SorterResult<TellrawData>) => {
-        setSorter(() => sorter)
-    }
     const columns: any = [
         {
             title: '序号',
@@ -233,7 +230,7 @@ export default function(props: IProps) {
         <Drawer
             width={720}
             onClose={props.onClose}
-            visible={props.visible}
+            open={props.visible}
             title={
                 <div>
                     <div style={{ float: 'right', marginRight: 50 }}>
@@ -271,7 +268,9 @@ export default function(props: IProps) {
                 rowKey='id'
                 rowSelection={rowSelection}
                 pagination={false}
-                onChange={changeHandle}
+                onChange={(_, __, sorter) => {
+                    setSorter(() => sorter as any)
+                }}
                 dataSource={props.data}/>
         </Drawer>
     )

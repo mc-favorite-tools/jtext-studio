@@ -2,7 +2,7 @@
  * The AGPL License (AGPL)
  * Copyright (c) 2023 hans000
  */
-import { Tag, Input, Tooltip, Icon } from 'antd';
+import { Tag, Input, Tooltip } from 'antd';
 import React from 'react';
 
 interface IProps {
@@ -80,7 +80,7 @@ export default class EditableTagGroup extends React.Component<IProps, IState> {
                 {
                     !inputVisible && (
                         <Tag onClick={this.showInput} style={{ background: '#fff', borderStyle: 'dashed' }}>
-                            <Icon type="plus" />标签
+                            +标签
                         </Tag>
                     )
                 }

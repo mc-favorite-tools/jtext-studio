@@ -3,7 +3,7 @@
  * Copyright (c) 2023 hans000
  */
 import React, { useState, useRef, useEffect } from "react";
-import { Modal, Input, TreeSelect, message, Row, Col } from "antd";
+import { Modal, Input, TreeSelect, message, Row, Col, InputRef } from "antd";
 // @ts-ignore
 import parse from "mojangson-parser";
 import Search from "antd/lib/input/Search";
@@ -18,7 +18,7 @@ export default function(props: IProps) {
     const [path, setPath] = useState([])
     const [data, setData] = useState([])
     const [select, setSelect] = useState(undefined)
-    const inputRef = useRef<Search>()
+    const inputRef = useRef<InputRef>()
     const valueRef = useRef<string>('')
     const typeRef = useRef<nbtType>('entity')
     
@@ -103,7 +103,7 @@ export default function(props: IProps) {
     }
     return (
         <Modal
-            visible={props.visible}
+            open={props.visible}
             onCancel={handleCancel}
             onOk={handleSuibmit}
             okText='确定'

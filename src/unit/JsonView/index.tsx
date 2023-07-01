@@ -3,6 +3,6 @@
  * Copyright (c) 2023 hans000
  */
 import JsonView from './JsonView'
-import './index.scss'
+import './index.less'
 
 export default JsonView

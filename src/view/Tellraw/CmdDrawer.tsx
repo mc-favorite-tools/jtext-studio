@@ -72,7 +72,7 @@ export default function(props: IProps) {
         <Drawer
             width={720}
             onClose={props.onClose}
-            visible={props.visible}
+            open={props.visible}
             title={
                 <div>
                     <div style={{ float: 'right', marginRight: 50 }}>

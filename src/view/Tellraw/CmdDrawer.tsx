@@ -1,3 +1,7 @@
+/*
+ * The AGPL License (AGPL)
+ * Copyright (c) 2023 hans000
+ */
 import React, { useState } from "react";
 import { Table, Button, Drawer, message } from "antd";
 import { JsonGroup } from "../../lib/tellraw";

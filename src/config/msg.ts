@@ -1,3 +1,7 @@
+/*
+ * The AGPL License (AGPL)
+ * Copyright (c) 2023 hans000
+ */
 export const welcomeMsg = {
     key: 'welcomeMsg',
     message: '亲爱的MC玩家，您好',

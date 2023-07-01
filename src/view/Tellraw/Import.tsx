@@ -1,3 +1,7 @@
+/*
+ * The AGPL License (AGPL)
+ * Copyright (c) 2023 hans000
+ */
 import React, { useState, useRef, useEffect } from "react";
 import { Modal, Input } from "antd";
 

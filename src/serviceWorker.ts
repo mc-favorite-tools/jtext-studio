@@ -1,3 +1,7 @@
+/*
+ * The AGPL License (AGPL)
+ * Copyright (c) 2023 hans000
+ */
 // This optional code is used to register a service worker.
 // register() is not called by default.
 

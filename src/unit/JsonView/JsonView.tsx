@@ -1,3 +1,7 @@
+/*
+ * The AGPL License (AGPL)
+ * Copyright (c) 2023 hans000
+ */
 import React from "react";
 import { ITileProps, ITextStyle } from "../../lib/tellraw/JsonTile";
 import ColorPicker from "../ColorPicker";

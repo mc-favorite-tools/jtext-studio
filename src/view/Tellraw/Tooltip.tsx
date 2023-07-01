@@ -1,3 +1,7 @@
+/*
+ * The AGPL License (AGPL)
+ * Copyright (c) 2023 hans000
+ */
 import React from "react";
 import JsonView from "../../unit/JsonView";
 import JsonTile from "../../lib/tellraw/JsonTile";

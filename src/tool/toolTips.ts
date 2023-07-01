@@ -1,3 +1,7 @@
+/*
+ * The AGPL License (AGPL)
+ * Copyright (c) 2023 hans000
+ */
 import * as Msgs from './../config/msg';
 import { notification } from "antd"
 

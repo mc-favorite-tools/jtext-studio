@@ -1,3 +1,7 @@
+/*
+ * The AGPL License (AGPL)
+ * Copyright (c) 2023 hans000
+ */
 import React, { useState, useEffect, useRef } from "react";
 import { Button, Select, Input, Row, Col, message, Radio, Tooltip, notification } from "antd";
 import { JsonGroup } from "../../lib/tellraw";

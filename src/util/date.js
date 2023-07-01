@@ -1,3 +1,8 @@
+/*
+ * The AGPL License (AGPL)
+ * Copyright (c) 2023 hans000
+ */
+// eslint-disable-next-line no-extend-native
 Date.prototype.format = function (fmt) {
     var o = {
         "M+": this.getMonth() + 1, //月份 

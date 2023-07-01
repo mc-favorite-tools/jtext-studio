@@ -1,3 +1,7 @@
+/*
+ * The AGPL License (AGPL)
+ * Copyright (c) 2023 hans000
+ */
 import JsonTile from "./JsonTile";
 import TileError from "../../util/TileError";
 

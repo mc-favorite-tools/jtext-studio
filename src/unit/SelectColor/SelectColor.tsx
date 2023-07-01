@@ -1,3 +1,7 @@
+/*
+ * The AGPL License (AGPL)
+ * Copyright (c) 2023 hans000
+ */
 import { GithubPicker, ColorResult } from "react-color";
 import React, { useState, useEffect } from "react";
 

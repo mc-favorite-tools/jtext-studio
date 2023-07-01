@@ -1,3 +1,7 @@
+/*
+ * The AGPL License (AGPL)
+ * Copyright (c) 2023 hans000
+ */
 export type scoreType = 'value' | 'objective'
 
 export interface ScoreProps {

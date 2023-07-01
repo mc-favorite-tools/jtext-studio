@@ -1,3 +1,7 @@
+/*
+ * The AGPL License (AGPL)
+ * Copyright (c) 2023 hans000
+ */
 import ClickEvent, { IClickProps } from "./event/ClickEvent";
 import HoverEvent, { IHoverProps } from "./event/HoverEvent";
 import Color from "./color";

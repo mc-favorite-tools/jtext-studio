@@ -1,3 +1,7 @@
+/*
+ * The AGPL License (AGPL)
+ * Copyright (c) 2023 hans000
+ */
 /* eslint-disable no-extend-native */
 String.prototype.escape = function() {
     return this.replace(/\\/g, '\\\\').replace(/"/g, '\\"')
